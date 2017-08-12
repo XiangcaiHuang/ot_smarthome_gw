@@ -13,6 +13,42 @@ const coap    = require('./coap')
     , httpServer  = require('./httpServer')
     , wsServer = require('./webSocketServer')
 
+
+// receive PUT message from Thread Nodes
+function coapMessageHandle(req, res)
+{
+	var method  = req.method.toString()
+	var url     = req.url.split('/')[1].toString()
+	var payload = req.payload.toString()
+
+	console.log('Request received:')
+	console.log('\t method:  ' + method)
+	console.log('\t url:     ' + url)
+	console.log('\t payload: ' + payload)
+
+	if (method === 'PUT') {
+		console.log(url + ': ' + payload)
+
+		switch(url){
+		case config.lockSta:
+			// send payload to Web UI
+			console.log('GW: Send lock status to UI.\r\n')
+			// sendToNode(localAddr, url, valOn)
+			break
+		case config.lightSta:
+			// send payload to Web UI
+			console.log('GW: Send light status to UI.\r\n')
+			// sendToNode(localAddr, url, valOff)
+			break
+		default:
+			console.error('Err: Bad url.\r\n')
+			break
+		}
+	}
+	res.end('GW: Received.') // send response to client
+}
+
+// receive PUT message from Web UI
 function WSMessageHandle()
 {
 	console.log('webSocket handler.')
@@ -55,8 +91,9 @@ const commands = {
 
 /********************   Main   **************************/
 console.log('OT Gateway starting:')
-coap.serverStart()
-httpServer.start();
-wsServer.start(WSMessageHandle);
+
+coap.serverStart(coapMessageHandle)
+httpServer.start()
+wsServer.start(WSMessageHandle)
 
 clUtils.initialize(commands, 'GW> ')
