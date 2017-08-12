@@ -28,7 +28,7 @@ function stateInit()
 		},
 		'livingroom':{
 			"3311":{"0":{"5850": false}},// 'light_sta'
-			"3303":{"0":{"5700": 30}}    // 'temp'
+			"3303":{"0":{"5700": 0}}     // 'temp'
 		}
 	}
 }
@@ -98,7 +98,7 @@ function deltaFromUI(thingName, stateObject)
 
 		// send state changed to Node
 		console.log('GW: Send state changed to Node.')
-		var url
+		var url, UIChanged = false
 
 		// remap Object Id to coap url
 		if (endpoint == cfgCoap.nodeFrontdoor) {
@@ -106,23 +106,27 @@ function deltaFromUI(thingName, stateObject)
 			case cfgObjectId.oIdLight:
 				url = cfgCoap.lockSta
 				coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
+
+				//update all app UI
+				sendToUI(cfgCoap.nodeFrontdoor, url, newValue)
 				break
 			default:
 				console.error('Err: Bad Object oId')
 				return
 			}
-			// coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
 		} else if (endpoint == cfgCoap.nodeLivingroom) {
 			switch (oId) {
 			case cfgObjectId.oIdLight:
 				url = cfgCoap.lightSta
-				// coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
+				coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
+
+				//update all app UI
+				sendToUI(cfgCoap.nodeLivingroom, url, newValue)
 				break
 			default:
 				console.error('Err: Bad Object oId')
 				return
 			}
-			coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
 		} else {
 			console.error('Err: Bad Object endpoint.')
 			return
