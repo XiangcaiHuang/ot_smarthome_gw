@@ -8,7 +8,8 @@ LICENSE
  	OpenThread Application Gateway.
 --------------------------------------------- */
 const coap    = require('./coap')
-    , config  = require('./config').coap
+    , cfgCoap  = require('./config').coap
+    , cfgObjectId  = require('./config').ObjectId
     , clUtils = require('command-node')
     , httpServer  = require('./httpServer')
     , wsServer = require('./webSocketServer')
@@ -23,10 +24,10 @@ function stateInit()
 {
 	stateNew = {
 		'frontdoor':{
-			'lock_sta':  'OFF'
+			"3311":{"0":{"5850": false}} // 'lock_sta':
 		},
 		'livingroom':{
-			'light_sta': 'OFF'
+			"3311":{"0":{"5850": false}} // 'light_sta':
 		}
 	}
 }
@@ -45,11 +46,11 @@ function coapMessageHandle(req, res)
 
 	if (method === 'PUT') {
 		switch(url){
-		case config.lockSta:
-			sendToUI(config.nodeFrontdoor, config.lockSta, value)
+		case cfgCoap.lockSta:
+			sendToUI(cfgCoap.nodeFrontdoor, cfgCoap.lockSta, value)
 			break
-		case config.lightSta:
-			sendToUI(config.nodeLivingroom, config.lightSta, value)
+		case cfgCoap.lightSta:
+			sendToUI(cfgCoap.nodeLivingroom, cfgCoap.lightSta, value)
 			break
 		default:
 			console.error('Err: Bad url.\r\n')
@@ -68,7 +69,26 @@ function WSMessageHandle()
 // send state changed to UI
 function sendToUI(nodeName, url, val)
 {
-	stateNew[nodeName][url] = val
+	var endpoint = nodeName
+	var oId, iId, rId
+
+	switch(url){
+	case cfgCoap.lockSta:
+	case cfgCoap.lightSta:
+		oId = cfgObjectId.oIdLight
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdLight
+		break
+	default:
+		console.error('Err: Bad url')
+	}
+
+	if (val == cfgCoap.valOn) {
+		val = true
+	} else {
+		val = false
+	}
+	stateNew[endpoint][oId][iId][rId] = val
 
 	var stateChange = utils.getDifferent(stateNew, state)
 	if (stateChange !== undefined) {
@@ -92,17 +112,17 @@ function cmdShowState()
 
 function cmdSendToNode(commands)
 {
-	coap.sendToNode(config.localAddr, config.nodePort, commands[0], commands[1])
+	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, commands[0], commands[1])
 }
 
 function cmdSend1ToNode(commands)
 {
-	coap.sendToNode(config.localAddr, config.nodePort, config.lockSta, config.valOn)
+	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, cfgCoap.lockSta, cfgCoap.valOn)
 }
 
 function cmdSend2ToNode(commands)
 {
-	coap.sendToNode(config.localAddr, config.nodePort, config.lightSta, config.valOn)
+	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, cfgCoap.lightSta, cfgCoap.valOn)
 }
 
 const commands = {

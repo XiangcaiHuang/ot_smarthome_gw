@@ -30,8 +30,18 @@ config.coap = {
       , nodeLivingroom: 'livingroom'
       , lockSta:   'lock_sta'
       , lightSta:  'light_sta'
-      , valOn:     'ON'
-      , valOff:    'OFF'
+      , valOn:     '1'
+      , valOff:    '0'
+}
+
+// Configuration of the Object Id
+//--------------------------------------------------
+config.ObjectId = {
+        oIdLight: 3311
+      , oIdTemp:  3303
+      , iId:      '0'
+      , rIdLight: 5850
+      , rIdTemp:  5700
 }
 
 // Configuration of the http server
