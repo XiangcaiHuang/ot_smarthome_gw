@@ -31,7 +31,7 @@ function sendToNode(nodeAddr, nodePort, url, value)
 		, pathname: url // url for PUT request
 	})
 
-	console.log('GW: Send PUT request to [' + nodeAddr + '].')
+	console.log('\nGW: Send {' + url + ': ' + value + '} to [' + nodeAddr + ': ' + nodePort + '].')
 
 	req.on('response', function(res) {
 		console.log('GW: Send successfully.')

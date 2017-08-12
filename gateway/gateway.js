@@ -72,27 +72,56 @@ function deltaFromUI(thingName, stateObject)
 		newValue = stateDelta[endpoint][oId][iId][rId]
 
 		if (!stateNew[endpoint]) {
-			console.error('GW: Can not find this Node-%s in stateNew', endpoint)
+			console.error('GW: Can not find this Node-%s in stateNew.', endpoint)
 			return
 		}
 
 		// update stateNew
 		stateNew[endpoint][oId][iId][rId] = newValue
 
+		endpoint = endpoint.toString()
+		oId = oId.toString()
+		iId = iId.toString()
+		rId = rId.toString()
+		newValue = newValue.toString()
+
 		// must send "1"/"0" to node ,not "true" or "false"
-		if (newValue.toString() == "true") {
+		if (newValue == "true") {
 			newValue = "1"
 		} else {
 			newValue = "0"
 		}
 
 		// send state changed to Node
-		console.log("GW: Send state changed to Node")
-		console.log(endpoint.toString())
-		console.log(oId.toString())
-		console.log(iId.toString())
-		console.log(rId.toString())
-		console.log(newValue)
+		console.log("GW: Send state changed to Node.")
+		var url
+
+		if (endpoint == cfgCoap.nodeFrontdoor) {
+			switch (oId) {
+			case cfgObjectId.oIdLight:
+				url = cfgCoap.lockSta
+				coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
+				break
+			default:
+				console.error('Err: Bad Object oId')
+				return
+			}
+			// coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
+		} else if (endpoint == cfgCoap.nodeLivingroom) {
+			switch (oId) {
+			case cfgObjectId.oIdLight:
+				url = cfgCoap.lightSta
+				// coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
+				break
+			default:
+				console.error('Err: Bad Object oId')
+				return
+			}
+			coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
+		} else {
+			console.error('Err: Bad Object endpoint.')
+			return
+		}
 	}}}}
 }
 
@@ -101,28 +130,28 @@ function WSMessageHandle(message)
 {
 	if (message.type === 'utf8') {
 		var msg = message.utf8Data
-		console.log("GW: Received package: " + msg)
+		console.log("\n\nGW: Received package: " + msg)
 
 		//get package "{}" means the UI is start running, need to get all state - stateNew
 		if (msg == "{}") {
 			wsServer.send(stateNew)          //send stateNew to UI
 			state = utils.deepCopy(stateNew) //update state
-			console.log("GW: UI is start running")
+			console.log("GW: UI is start running.")
 		} else {
 			var stateNew = JSON.parse(msg)
 			for (var key in stateNew) {
 				//get package "desired" means the UI has changed
 				if (key == "desired") {
-					console.log("GW: UI status changed")
+					console.log("GW: UI status changed.")
 					//deal with the delta message from UI
 					deltaFromUI(null, {state: stateNew[key]})
 				} else {
-					console.error("GW: Can't recieved reported")
+					console.error("GW: Can't recieved reported.")
 				}
 			}
 		}
 	} else {
-		console.error("GW: Unknow message type")
+		console.error("GW: Unknow message type.")
 	}
 }
 

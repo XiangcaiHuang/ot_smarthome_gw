@@ -37,11 +37,11 @@ config.coap = {
 // Configuration of the Object Id
 //--------------------------------------------------
 config.ObjectId = {
-        oIdLight: 3311
-      , oIdTemp:  3303
+        oIdLight: '3311'
+      , oIdTemp:  '3303'
       , iId:      '0'
-      , rIdLight: 5850
-      , rIdTemp:  5700
+      , rIdLight: '5850'
+      , rIdTemp:  '5700'
 }
 
 // Configuration of the http server
