@@ -1,0 +1,32 @@
+{
+  "name": "gateway",
+  "version": "1.0.0",
+  "description": "OpenThread Application Gateway",
+  "main": "gateway.js",
+  "dependencies": {
+    "coap": "^0.21.0",
+    "command-node": "^0.1.1",
+    "websocket": "^1.0.24"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XiangcaiHuang/ot_smarthome_gw.git"
+  },
+  "keywords": [
+    "Smarthome",
+    "OpenThread",
+    "CoAP",
+    "NodeJs",
+    "Gateway"
+  ],
+  "author": "XiangcaiHuang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/XiangcaiHuang/ot_smarthome_gw/issues"
+  },
+  "homepage": "https://github.com/XiangcaiHuang/ot_smarthome_gw#readme"
+}
