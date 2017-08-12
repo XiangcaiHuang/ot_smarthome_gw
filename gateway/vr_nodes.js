@@ -6,32 +6,16 @@ LICENSE
  * \author  Xiangcai Huang
  * \brief	the functions about the virtual Thread Nodes.
 --------------------------------------------- */
-// Gateway's IPv6 address:
-// 	fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3
-
-// Node command:
-// 	coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 lock_btn con 1
-// 	coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 light_btn con 2
-
-const GW_ADDR    = 'fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3' // Gateway's IPv6 address
-    , LOCAL_ADDR = '::1' // Localhost's IPv6 address
-    , NODE_PORT  = 5683
-    , GW_PORT    = 5684
-
-const LOCK_STA  = 'lock_sta'
-    , LIGHT_STA = 'light_sta'
-    , VAL_ON    = 'ON'
-    , VAL_OFF   = 'OFF'
-
 const coap  = require('coap')
+    , config  = require('./config').coap
     , clUtils = require('command-node')
     , coapServer = coap.createServer({ type: 'udp6' })
 
 
 function coapServerStart()
 {
-	coapServer.listen(NODE_PORT, LOCAL_ADDR, function() {
-		console.log('Virtual nodes started.\r\n')
+	coapServer.listen(config.nodePort, config.localAddr, function() {
+		console.log('Coap: Listening at port: ' + config.nodePort)
 	})
 
 	// receive PUT message from Gateway
@@ -49,11 +33,11 @@ function coapServerStart()
 			console.log(url + ': ' + payload)
 
 			switch(url){
-			case LOCK_STA:
+			case config.lockSta:
 				// set lock status
 				console.log('Nodes: Set lock status.\r\n')
 				break
-			case LIGHT_STA:
+			case config.lightSta:
 				// set light status
 				console.log('Nodes: Set light status.\r\n')
 				break
@@ -90,17 +74,17 @@ function sendToGW(gwAddr, gwPort, url, value)
 /******************** Commands **************************/
 function cmdSendToGW(commands)
 {
-	sendToGW(LOCAL_ADDR, GW_PORT, commands[0], commands[1])
+	sendToGW(config.localAddr, config.gwPort, commands[0], commands[1])
 }
 
 function cmdSend1ToGW(commands)
 {
-	sendToGW(LOCAL_ADDR, GW_PORT, LOCK_STA, VAL_ON)
+	sendToGW(config.localAddr, config.gwPort, config.lockSta, config.valOn)
 }
 
 function cmdSend2ToGW(commands)
 {
-	sendToGW(LOCAL_ADDR, GW_PORT, LIGHT_STA, VAL_ON)
+	sendToGW(config.localAddr, config.gwPort, config.lightSta, config.valOn)
 }
 
 const commands = {
@@ -111,12 +95,12 @@ const commands = {
 	},
 	's1': {
 		parameters: [],
-		description: '\tSend LOCK_STA PUT message to Gateway',
+		description: '\tSend lockSta PUT message to Gateway',
 		handler: cmdSend1ToGW
 	},
 	's2': {
 		parameters: [],
-		description: '\tSend LIGHT_STA PUT message to Gateway',
+		description: '\tSend lightSta PUT message to Gateway',
 		handler: cmdSend2ToGW
 	}
 }
