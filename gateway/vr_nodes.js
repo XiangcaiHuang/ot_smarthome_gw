@@ -13,8 +13,9 @@ const LIGHT_STA = 'light_sta'
 const VAL_ON    = 'ON'
 const VAL_OFF   = 'OFF'
 
-const coap    = require('coap')
-    , coapServer  = coap.createServer({ type: 'udp6' })
+const coap  = require('coap')
+    , clUtils = require('command-node')
+    , coapServer = coap.createServer({ type: 'udp6' })
 
 // coapServer.listen(function() {
 // 	console.log('Virtual nodes started.\r\n')
@@ -52,9 +53,6 @@ const coap    = require('coap')
 // 	res.end('Nodes: Received.') // send response to client
 // })
 
-sendToGW(LOCAL_ADDR, LOCK_STA, VAL_ON)
-sendToGW(LOCAL_ADDR, LIGHT_STA, VAL_ON)
-
 // send PUT message to Gateway
 function sendToGW(gwAddr, url, value){
 	var req = coap.request({
@@ -72,3 +70,39 @@ function sendToGW(gwAddr, url, value){
 
 	req.end(value) // add payload: value to PUT message
 }
+
+
+/******************** Commands **************************/
+function cmdSendToGW(commands){
+	sendToGW(LOCAL_ADDR, commands[0], commands[1])
+}
+
+function cmdSend1ToGW(commands){
+	sendToGW(LOCAL_ADDR, LOCK_STA, VAL_ON)
+}
+
+function cmdSend2ToGW(commands){
+	sendToGW(LOCAL_ADDR, LIGHT_STA, VAL_ON)
+}
+
+const commands = {
+	's': {
+		parameters: ['url', 'value'],
+		description: '\tSend PUT message to Gateway',
+		handler: cmdSendToGW
+	},
+	's1': {
+		parameters: [],
+		description: '\tSend LOCK_STA PUT message to Gateway',
+		handler: cmdSend1ToGW
+	},
+	's2': {
+		parameters: [],
+		description: '\tSend LIGHT_STA PUT message to Gateway',
+		handler: cmdSend2ToGW
+	}
+}
+/******************** Commands **************************/
+
+/********************   Main   **************************/
+clUtils.initialize(commands, 'Nodes> ')
