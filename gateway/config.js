@@ -30,6 +30,7 @@ config.coap = {
       , nodeLivingroom: 'livingroom'
       , lockSta:   'lock_sta'
       , lightSta:  'light_sta'
+      , temp:      'temp'
       , valOn:     '1'
       , valOff:    '0'
 }

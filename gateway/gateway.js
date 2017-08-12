@@ -24,10 +24,11 @@ function stateInit()
 {
 	stateNew = {
 		'frontdoor':{
-			"3311":{"0":{"5850": false}} // 'lock_sta':
+			"3311":{"0":{"5850": false}} // 'lock_sta'
 		},
 		'livingroom':{
-			"3311":{"0":{"5850": false}} // 'light_sta':
+			"3311":{"0":{"5850": false}},// 'light_sta'
+			"3303":{"0":{"5700": 30}}    // 'temp'
 		}
 	}
 }
@@ -51,6 +52,9 @@ function coapMessageHandle(req, res)
 			break
 		case cfgCoap.lightSta:
 			sendToUI(cfgCoap.nodeLivingroom, cfgCoap.lightSta, value)
+			break
+		case cfgCoap.temp:
+			sendToUI(cfgCoap.nodeLivingroom, cfgCoap.temp, value)
 			break
 		default:
 			console.error('Err: Bad url.\r\n')
@@ -169,14 +173,21 @@ function sendToUI(nodeName, url, val)
 		iId = cfgObjectId.iId
 		rId = cfgObjectId.rIdLight
 		break
+	case cfgCoap.temp:
+		oId = cfgObjectId.oIdTemp
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdTemp
+		break
 	default:
 		console.error('Err: Bad url')
 	}
 
 	if (val == cfgCoap.valOn) {
 		val = true
-	} else {
+	} else if (val == cfgCoap.valOff) {
 		val = false
+	} else {
+		val = parseInt(val)
 	}
 	stateNew[endpoint][oId][iId][rId] = val
 
