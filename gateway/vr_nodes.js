@@ -60,7 +60,7 @@ function sendToGW(gwAddr, gwPort, url, value)
 		, pathname: url // url for PUT request
 	})
 
-	console.log('Nodes: Send PUT request to [' + gwAddr + '].')
+	console.log('\nGW: Send {' + url + ': ' + value + '} to [' + gwAddr + ': ' + gwPort + '].')
 
 	req.on('response', function(res) {
 		console.log('Nodes: Send successfully.')

@@ -8,9 +8,9 @@ LICENSE
 	OpenThread Application Gateway.
 --------------------------------------------- */
 const coap    = require('./coap')
-    , cfgCoap  = require('./config').coap
-    , cfgObjectId  = require('./config').ObjectId
-    , clUtils = require('command-node')
+    , cfgCoap = require('./config').coap
+    , cfgObjectId = require('./config').ObjectId
+    , clUtils     = require('command-node')
     , httpServer  = require('./httpServer')
     , wsServer = require('./webSocketServer')
     , utils    = require('./utils')
@@ -90,16 +90,17 @@ function deltaFromUI(thingName, stateObject)
 		newValue = newValue.toString()
 
 		// must send "1"/"0" to node ,not "true" or "false"
-		if (newValue == "true") {
-			newValue = "1"
+		if (newValue == 'true') {
+			newValue = '1'
 		} else {
-			newValue = "0"
+			newValue = '0'
 		}
 
 		// send state changed to Node
-		console.log("GW: Send state changed to Node.")
+		console.log('GW: Send state changed to Node.')
 		var url
 
+		// remap Object Id to coap url
 		if (endpoint == cfgCoap.nodeFrontdoor) {
 			switch (oId) {
 			case cfgObjectId.oIdLight:
@@ -134,19 +135,19 @@ function WSMessageHandle(message)
 {
 	if (message.type === 'utf8') {
 		var msg = message.utf8Data
-		console.log("\n\nGW: Received package: " + msg)
+		console.log('\n\nGW: Received package: ' + msg)
 
 		//get package "{}" means the UI is start running, need to get all state - stateNew
-		if (msg == "{}") {
+		if (msg == '{}') {
 			wsServer.send(stateNew)          //send stateNew to UI
 			state = utils.deepCopy(stateNew) //update state
-			console.log("GW: UI is start running.")
+			console.log('GW: UI is start running.')
 		} else {
 			var stateNew = JSON.parse(msg)
 			for (var key in stateNew) {
 				//get package "desired" means the UI has changed
-				if (key == "desired") {
-					console.log("GW: UI status changed.")
+				if (key == 'desired') {
+					console.log('GW: UI status changed.')
 					//deal with the delta message from UI
 					deltaFromUI(null, {state: stateNew[key]})
 				} else {
@@ -155,7 +156,7 @@ function WSMessageHandle(message)
 			}
 		}
 	} else {
-		console.error("GW: Unknow message type.")
+		console.error('GW: Unknow message type.')
 	}
 }
 
