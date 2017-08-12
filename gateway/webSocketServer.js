@@ -10,7 +10,7 @@ LICENSE
 const WebSocketServer = require('websocket').server
     , http = require('http')
     , config = require('./config').WebSocketServer
-    , clients = []
+var   clients = []
 
 function start(handleMessage)
 {
