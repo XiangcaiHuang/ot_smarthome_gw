@@ -1,3 +1,11 @@
+/* ------------------------------------------
+LICENSE
+
+ * \version 
+ * \date    2017-8-12
+ * \author  Xiangcai Huang
+ * \brief	the functions about the virtual Thread Nodes.
+--------------------------------------------- */
 // Gateway's IPv6 address:
 // 	fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3
 
@@ -6,21 +14,22 @@
 // 	coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 light_btn con 2
 
 const GW_ADDR    = 'fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3' // Gateway's IPv6 address
-const LOCAL_ADDR = '::1' // Localhost's IPv6 address
-const NODE_PORT  = 5683
-const GW_PORT    = 5684
+    , LOCAL_ADDR = '::1' // Localhost's IPv6 address
+    , NODE_PORT  = 5683
+    , GW_PORT    = 5684
 
 const LOCK_STA  = 'lock_sta'
-const LIGHT_STA = 'light_sta'
-const VAL_ON    = 'ON'
-const VAL_OFF   = 'OFF'
+    , LIGHT_STA = 'light_sta'
+    , VAL_ON    = 'ON'
+    , VAL_OFF   = 'OFF'
 
 const coap  = require('coap')
     , clUtils = require('command-node')
     , coapServer = coap.createServer({ type: 'udp6' })
 
 
-function coapServerStart(){
+function coapServerStart()
+{
 	coapServer.listen(NODE_PORT, LOCAL_ADDR, function() {
 		console.log('Virtual nodes started.\r\n')
 	})
@@ -58,7 +67,8 @@ function coapServerStart(){
 }
 
 // send PUT message to Gateway
-function sendToGW(gwAddr, gwPort, url, value){
+function sendToGW(gwAddr, gwPort, url, value)
+{
 	var req = coap.request({
 		  host: gwAddr
 		, port: gwPort
@@ -78,15 +88,18 @@ function sendToGW(gwAddr, gwPort, url, value){
 
 
 /******************** Commands **************************/
-function cmdSendToGW(commands){
+function cmdSendToGW(commands)
+{
 	sendToGW(LOCAL_ADDR, GW_PORT, commands[0], commands[1])
 }
 
-function cmdSend1ToGW(commands){
+function cmdSend1ToGW(commands)
+{
 	sendToGW(LOCAL_ADDR, GW_PORT, LOCK_STA, VAL_ON)
 }
 
-function cmdSend2ToGW(commands){
+function cmdSend2ToGW(commands)
+{
 	sendToGW(LOCAL_ADDR, GW_PORT, LIGHT_STA, VAL_ON)
 }
 
@@ -112,4 +125,4 @@ const commands = {
 /********************   Main   **************************/
 coapServerStart()
 
-clUtils.initialize(commands, 'Nodes> ')
+clUtils.initialize(commands, 'Node> ')
