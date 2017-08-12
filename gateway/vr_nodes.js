@@ -24,7 +24,7 @@ function coapServerStart()
 		var url     = req.url.split('/')[1].toString()
 		var payload = req.payload.toString()
 
-		console.log('Request received:')
+		console.log('\nRequest received:')
 		console.log('\t method:  ' + method)
 		console.log('\t url:     ' + url)
 		console.log('\t payload: ' + payload)

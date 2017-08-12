@@ -26,6 +26,8 @@ config.coap = {
       , localAddr: '::1' // Localhost's IPv6 address
       , nodePort:  5684
       , gwPort:    5683
+      , nodeFrontdoor:  'frontdoor'
+      , nodeLivingroom: 'livingroom'
       , lockSta:   'lock_sta'
       , lightSta:  'light_sta'
       , valOn:     'ON'

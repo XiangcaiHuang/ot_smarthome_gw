@@ -12,33 +12,44 @@ const coap    = require('./coap')
     , clUtils = require('command-node')
     , httpServer  = require('./httpServer')
     , wsServer = require('./webSocketServer')
+    , utils    = require('./utils')
 
+var   stateNew = require('./state').stateNew
+    , state    = require('./state').state
+
+
+// must initialize the stateNew or it happen error
+function stateInit()
+{
+	stateNew = {
+		'frontdoor':{
+			'lock_sta':  'OFF'
+		},
+		'livingroom':{
+			'light_sta': 'OFF'
+		}
+	}
+}
 
 // receive PUT message from Thread Nodes
 function coapMessageHandle(req, res)
 {
 	var method  = req.method.toString()
 	var url     = req.url.split('/')[1].toString()
-	var payload = req.payload.toString()
+	var value   = req.payload.toString()
 
-	console.log('Request received:')
+	console.log('\nRequest received:')
 	console.log('\t method:  ' + method)
 	console.log('\t url:     ' + url)
-	console.log('\t payload: ' + payload)
+	console.log('\t payload: ' + value)
 
 	if (method === 'PUT') {
-		console.log(url + ': ' + payload)
-
 		switch(url){
 		case config.lockSta:
-			// send payload to Web UI
-			console.log('GW: Send lock status to UI.\r\n')
-			// sendToNode(localAddr, url, valOn)
+			sendToUI(config.nodeFrontdoor, config.lockSta, value)
 			break
 		case config.lightSta:
-			// send payload to Web UI
-			console.log('GW: Send light status to UI.\r\n')
-			// sendToNode(localAddr, url, valOff)
+			sendToUI(config.nodeLivingroom, config.lightSta, value)
 			break
 		default:
 			console.error('Err: Bad url.\r\n')
@@ -54,7 +65,31 @@ function WSMessageHandle()
 	console.log('webSocket handler.')
 }
 
+// send state changed to UI
+function sendToUI(nodeName, url, val)
+{
+	stateNew[nodeName][url] = val
+
+	var stateChange = utils.getDifferent(stateNew, state)
+	if (stateChange !== undefined) {
+		console.log("GW: Send state changed to UI.")
+		console.log("\tstate changed : " + JSON.stringify(stateChange))
+
+		wsServer.send(stateChange)       //send to UI
+		state = utils.deepCopy(stateNew) //update state
+	} 
+}
+
 /******************** Commands **************************/
+function cmdShowState()
+{
+	console.log('stateNew:')
+	console.log(JSON.stringify(stateNew))
+	console.log('\n')
+	console.log('state:')
+	console.log(JSON.stringify(state))
+}
+
 function cmdSendToNode(commands)
 {
 	coap.sendToNode(config.localAddr, config.nodePort, commands[0], commands[1])
@@ -71,6 +106,11 @@ function cmdSend2ToNode(commands)
 }
 
 const commands = {
+	'show': {
+		parameters: [],
+		description: '\tList all the resource in state and stateNew.',
+		handler: cmdShowState
+	},
 	's': {
 		parameters: ['url', 'value'],
 		description: '\tSend PUT message to Node',
@@ -92,6 +132,7 @@ const commands = {
 /********************   Main   **************************/
 console.log('OT Gateway starting:')
 
+stateInit()
 coap.serverStart(coapMessageHandle)
 httpServer.start()
 wsServer.start(WSMessageHandle)
