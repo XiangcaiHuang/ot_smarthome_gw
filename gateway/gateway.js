@@ -5,7 +5,7 @@ LICENSE
  * \date    2017-8-12
  * \author  Xiangcai Huang
  * \brief	the functions about the 
- 	OpenThread Application Gateway.
+	OpenThread Application Gateway.
 --------------------------------------------- */
 const coap    = require('./coap')
     , cfgCoap  = require('./config').coap
@@ -60,10 +60,70 @@ function coapMessageHandle(req, res)
 	res.end('GW: Received.') // send response to client
 }
 
-// receive PUT message from Web UI
-function WSMessageHandle()
+function deltaFromUI(thingName, stateObject)
 {
-	console.log('webSocket handler.')
+	var stateDelta = stateObject.state, newValue, endpoint, oId, iId, rId
+
+	for (endpoint in stateDelta) {
+	for (oId in stateDelta[endpoint]) {
+	for (iId in stateDelta[endpoint][oId]) {
+	for (rId in stateDelta[endpoint][oId][iId]) {
+		// get new value from delta message
+		newValue = stateDelta[endpoint][oId][iId][rId]
+
+		if (!stateNew[endpoint]) {
+			console.error('GW: Can not find this Node-%s in stateNew', endpoint)
+			return
+		}
+
+		// update stateNew
+		stateNew[endpoint][oId][iId][rId] = newValue
+
+		// must send "1"/"0" to node ,not "true" or "false"
+		if (newValue.toString() == "true") {
+			newValue = "1"
+		} else {
+			newValue = "0"
+		}
+
+		// send state changed to Node
+		console.log("GW: Send state changed to Node")
+		console.log(endpoint.toString())
+		console.log(oId.toString())
+		console.log(iId.toString())
+		console.log(rId.toString())
+		console.log(newValue)
+	}}}}
+}
+
+// receive PUT message from Web UI
+function WSMessageHandle(message)
+{
+	if (message.type === 'utf8') {
+		var msg = message.utf8Data
+		console.log("GW: Received package: " + msg)
+
+		//get package "{}" means the UI is start running, need to get all state - stateNew
+		if (msg == "{}") {
+			wsServer.send(stateNew)          //send stateNew to UI
+			state = utils.deepCopy(stateNew) //update state
+			console.log("GW: UI is start running")
+		} else {
+			var stateNew = JSON.parse(msg)
+			for (var key in stateNew) {
+				//get package "desired" means the UI has changed
+				if (key == "desired") {
+					console.log("GW: UI status changed")
+					//deal with the delta message from UI
+					deltaFromUI(null, {state: stateNew[key]})
+				} else {
+					console.error("GW: Can't recieved reported")
+				}
+			}
+		}
+	} else {
+		console.error("GW: Unknow message type")
+	}
 }
 
 // send state changed to UI
@@ -72,6 +132,7 @@ function sendToUI(nodeName, url, val)
 	var endpoint = nodeName
 	var oId, iId, rId
 
+	// remap coap url to Object Id
 	switch(url){
 	case cfgCoap.lockSta:
 	case cfgCoap.lightSta:
@@ -131,7 +192,7 @@ const commands = {
 		description: '\tList all the resource in state and stateNew.',
 		handler: cmdShowState
 	},
-	's': {
+	's': { // s lock_sta 1/0
 		parameters: ['url', 'value'],
 		description: '\tSend PUT message to Node',
 		handler: cmdSendToNode
