@@ -5,8 +5,10 @@
 // 	coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 lock_btn con 1
 // 	coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 light_btn con 2
 
-const GATEWAY_ADDR  = 'fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3' // Gateway's IPv6 address
-const LOCAL_ADDR    = '::1' // Localhost's IPv6 address
+const GW_ADDR    = 'fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3' // Gateway's IPv6 address
+const LOCAL_ADDR = '::1' // Localhost's IPv6 address
+const NODE_PORT  = 5683
+const GW_PORT    = 5684
 
 const LOCK_STA  = 'lock_sta'
 const LIGHT_STA = 'light_sta'
@@ -17,46 +19,49 @@ const coap  = require('coap')
     , clUtils = require('command-node')
     , coapServer = coap.createServer({ type: 'udp6' })
 
-// coapServer.listen(function() {
-// 	console.log('Virtual nodes started.\r\n')
-// 	// sendToGW(LOCAL_ADDR, LOCK_STA)
-// })
 
-// // receive PUT message from Gateway
-// coapServer.on('request', function(req, res) {
-// 	var method  = req.method.toString()
-// 	var url     = req.url.split('/')[1].toString()
-// 	var payload = req.payload.toString()
+function coapServerStart(){
+	coapServer.listen(NODE_PORT, LOCAL_ADDR, function() {
+		console.log('Virtual nodes started.\r\n')
+	})
 
-// 	console.log('Request received:')
-// 	console.log('\t method:  ' + method)
-// 	console.log('\t url:     ' + url)
-// 	console.log('\t payload: ' + payload)
+	// receive PUT message from Gateway
+	coapServer.on('request', function(req, res) {
+		var method  = req.method.toString()
+		var url     = req.url.split('/')[1].toString()
+		var payload = req.payload.toString()
 
-// 	if (method === 'PUT') {
-// 		console.log(url + ': ' + payload)
+		console.log('Request received:')
+		console.log('\t method:  ' + method)
+		console.log('\t url:     ' + url)
+		console.log('\t payload: ' + payload)
 
-// 		switch(url){
-// 		case LOCK_STA:
-// 			// set lock status
-// 			console.log('Nodes: Set lock status.')
-// 			break
-// 		case LIGHT_STA:
-// 			// set light status
-// 			sendToGW(LOCAL_ADDR, url)
-// 			break
-// 		default:
-// 			console.error('Err: Bad url.')
-// 			break
-// 		}
-// 	}
-// 	res.end('Nodes: Received.') // send response to client
-// })
+		if (method === 'PUT') {
+			console.log(url + ': ' + payload)
+
+			switch(url){
+			case LOCK_STA:
+				// set lock status
+				console.log('Nodes: Set lock status.\r\n')
+				break
+			case LIGHT_STA:
+				// set light status
+				console.log('Nodes: Set light status.\r\n')
+				break
+			default:
+				console.error('Err: Bad url.\r\n')
+				break
+			}
+		}
+		res.end('Nodes: Received.') // send response to client
+	})
+}
 
 // send PUT message to Gateway
-function sendToGW(gwAddr, url, value){
+function sendToGW(gwAddr, gwPort, url, value){
 	var req = coap.request({
 		  host: gwAddr
+		, port: gwPort
 		, method: 'PUT'
 		, pathname: url // url for PUT request
 	})
@@ -74,15 +79,15 @@ function sendToGW(gwAddr, url, value){
 
 /******************** Commands **************************/
 function cmdSendToGW(commands){
-	sendToGW(LOCAL_ADDR, commands[0], commands[1])
+	sendToGW(LOCAL_ADDR, GW_PORT, commands[0], commands[1])
 }
 
 function cmdSend1ToGW(commands){
-	sendToGW(LOCAL_ADDR, LOCK_STA, VAL_ON)
+	sendToGW(LOCAL_ADDR, GW_PORT, LOCK_STA, VAL_ON)
 }
 
 function cmdSend2ToGW(commands){
-	sendToGW(LOCAL_ADDR, LIGHT_STA, VAL_ON)
+	sendToGW(LOCAL_ADDR, GW_PORT, LIGHT_STA, VAL_ON)
 }
 
 const commands = {
@@ -105,4 +110,6 @@ const commands = {
 /******************** Commands **************************/
 
 /********************   Main   **************************/
+coapServerStart()
+
 clUtils.initialize(commands, 'Nodes> ')
