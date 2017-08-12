@@ -77,31 +77,24 @@ function cmdSendToGW(commands)
 	sendToGW(config.localAddr, config.gwPort, commands[0], commands[1])
 }
 
-function cmdSend1ToGW(commands)
+function cmdResetNodes(commands)
 {
-	sendToGW(config.localAddr, config.gwPort, config.lockSta, config.valOn)
-}
-
-function cmdSend2ToGW(commands)
-{
-	sendToGW(config.localAddr, config.gwPort, config.lightSta, config.valOn)
+	sendToGW(config.localAddr, config.gwPort, config.lockSta, config.valOff)
+	
+	sendToGW(config.localAddr, config.gwPort, config.lightSta, config.valOff)
+	sendToGW(config.localAddr, config.gwPort, config.temp, config.valDefault)
 }
 
 const commands = {
-	's': {
+	's': { // like: send lock_sta 1
 		parameters: ['url', 'value'],
-		description: '\tSend PUT message to Gateway',
+		description: '\tSend CoAP PUT message to Gateway',
 		handler: cmdSendToGW
 	},
-	's1': {
+	'rst': {
 		parameters: [],
-		description: '\tSend lockSta PUT message to Gateway',
-		handler: cmdSend1ToGW
-	},
-	's2': {
-		parameters: [],
-		description: '\tSend lightSta PUT message to Gateway',
-		handler: cmdSend2ToGW
+		description: '\tSend CoAP PUT message to reset frontdoor and livingroom',
+		handler: cmdResetNodes
 	}
 }
 /******************** Commands **************************/

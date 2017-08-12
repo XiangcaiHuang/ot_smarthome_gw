@@ -185,6 +185,7 @@ function sendToUI(nodeName, url, val)
 		break
 	default:
 		console.error('Err: Bad url')
+		return
 	}
 
 	if (val == cfgCoap.valOn) {
@@ -218,17 +219,33 @@ function cmdShowState()
 
 function cmdSendToNode(commands)
 {
-	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, commands[0], commands[1])
+	var nodeName = commands[0]
+	var url = commands[1]
+	var val = commands[2]
+
+	switch (nodeName) {
+	case 'f':
+		nodeName = cfgCoap.nodeFrontdoor
+		break
+	case 'l':
+		nodeName = cfgCoap.nodeLivingroom
+		break
+	default:
+		console.log('Err: Bad nodeName.')
+		return
+	}
+
+	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, val)
+	sendToUI(nodeName, url, val)
 }
 
-function cmdSend1ToNode(commands)
+function cmdResetNodes(commands)
 {
-	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, cfgCoap.lockSta, cfgCoap.valOn)
-}
+	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, cfgCoap.lockSta, cfgCoap.valOff)
+	sendToUI(cfgCoap.nodeFrontdoor, cfgCoap.lockSta, cfgCoap.valOff)
 
-function cmdSend2ToNode(commands)
-{
-	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, cfgCoap.lightSta, cfgCoap.valOn)
+	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, cfgCoap.lightSta, cfgCoap.valOff)
+	sendToUI(cfgCoap.nodeLivingroom, cfgCoap.lightSta, cfgCoap.valOff)
 }
 
 const commands = {
@@ -237,20 +254,15 @@ const commands = {
 		description: '\tList all the resource in state and stateNew.',
 		handler: cmdShowState
 	},
-	's': { // s lock_sta 1/0
-		parameters: ['url', 'value'],
-		description: '\tSend PUT message to Node',
+	'send': { // like: send f/l lock_sta 0/1
+		parameters: ['nodeName', 'url', 'value'],
+		description: '\tSend CoAP PUT message to Node',
 		handler: cmdSendToNode
 	},
-	's1': {
+	'reset': {
 		parameters: [],
-		description: '\tSend lockSta PUT message to Node',
-		handler: cmdSend1ToNode
-	},
-	's2': {
-		parameters: [],
-		description: '\tSend lightSta PUT message to Node',
-		handler: cmdSend2ToNode
+		description: '\tSend CoAP PUT message to reset frontdoor and livingroom',
+		handler: cmdResetNodes
 	}
 }
 /******************** Commands **************************/

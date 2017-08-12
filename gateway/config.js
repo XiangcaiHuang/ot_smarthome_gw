@@ -28,11 +28,12 @@ config.coap = {
       , gwPort:    5683
       , nodeFrontdoor:  'frontdoor'
       , nodeLivingroom: 'livingroom'
-      , lockSta:   'lock_sta'
-      , lightSta:  'light_sta'
-      , temp:      'temp'
-      , valOn:     '1'
-      , valOff:    '0'
+      , lockSta:  'lock_sta'
+      , lightSta: 'light_sta'
+      , temp:     'temp'
+      , valOn:      '1'
+      , valOff:     '0'
+      , valDefault: '0'
 }
 
 // Configuration of the Object Id
