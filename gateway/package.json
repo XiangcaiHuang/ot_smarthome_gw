@@ -10,7 +10,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "run"
+    "run": "node gateway.js"
   },
   "repository": {
     "type": "git",
