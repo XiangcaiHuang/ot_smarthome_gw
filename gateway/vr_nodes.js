@@ -86,7 +86,7 @@ function cmdResetNodes(commands)
 }
 
 const commands = {
-	's': { // like: send lock_sta 1
+	's': { // like: s lock_sta 1
 		parameters: ['url', 'value'],
 		description: '\tSend CoAP PUT message to Gateway',
 		handler: cmdSendToGW

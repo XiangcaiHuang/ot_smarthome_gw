@@ -11,10 +11,18 @@ const coap    = require('coap')
     , config  = require('./config').coap
     , coapServer  = coap.createServer({ type: 'udp6' })
 
+// for simulated nodes
+var   gwAddr = config.gwAddr
+    , gwPort = config.gwPort
+
+// for virtual nodes (NodeJs)
+// var   gwAddr = config.localAddr
+//     , gwPort = config.gwPort
+
 function serverStart(handleMessage)
 {
-	coapServer.listen(config.gwPort, config.gwAddr, function() {
-		console.log('Coap: Listening at port: ' + config.gwPort)
+	coapServer.listen(gwPort, gwAddr, function() {
+		console.log('Coap: Listening at port: ' + gwPort)
 	})
 
 	// receive PUT message from Thread Nodes

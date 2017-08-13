@@ -7,16 +7,26 @@ LICENSE
  * \brief	the functions about the 
 	OpenThread Application Gateway.
 --------------------------------------------- */
-const coap    = require('./coap')
-    , cfgCoap = require('./config').coap
+const coap     = require('./coap')
+    , cfgCoap  = require('./config').coap
+    , wsServer = require('./webSocketServer')
+    , utils    = require('./utils')
     , cfgObjectId = require('./config').ObjectId
     , clUtils     = require('command-node')
     , httpServer  = require('./httpServer')
-    , wsServer = require('./webSocketServer')
-    , utils    = require('./utils')
 
 var   stateNew = require('./state').stateNew
     , state    = require('./state').state
+
+// for simulated nodes
+var   frontdoorAddr  = cfgCoap.frontdoorAddr
+    , livingroomAddr = cfgCoap.livingroomAddr
+    , nodePort = cfgCoap.defaultPort
+
+// for virtual nodes (NodeJs)
+// var   frontdoorAddr  = cfgCoap.localAddr
+//     , livingroomAddr = cfgCoap.localAddr
+//     , nodePort = cfgCoap.nodePort
 
 
 // must initialize the stateNew or it happen error
@@ -105,7 +115,7 @@ function deltaFromUI(thingName, stateObject)
 			switch (oId) {
 			case cfgObjectId.oIdLight:
 				url = cfgCoap.lockSta
-				coap.sendToNode(cfgCoap.frontdoorAddr, cfgCoap.nodePort, url, newValue)
+				coap.sendToNode(frontdoorAddr, nodePort, url, newValue)
 
 				//update all app UI
 				sendToUI(cfgCoap.nodeFrontdoor, url, newValue)
@@ -118,7 +128,7 @@ function deltaFromUI(thingName, stateObject)
 			switch (oId) {
 			case cfgObjectId.oIdLight:
 				url = cfgCoap.lightSta
-				coap.sendToNode(cfgCoap.livingroomAddr, cfgCoap.nodePort, url, newValue)
+				coap.sendToNode(livingroomAddr, nodePort, url, newValue)
 
 				//update all app UI
 				sendToUI(cfgCoap.nodeLivingroom, url, newValue)
@@ -227,27 +237,27 @@ function cmdSendToNode(commands)
 	switch (nodeName) {
 	case 'f':
 		nodeName = cfgCoap.nodeFrontdoor
-		nodeAddr = cfgCoap.frontdoorAddr
+		nodeAddr = frontdoorAddr
 		break
 	case 'l':
 		nodeName = cfgCoap.nodeLivingroom
-		nodeAddr = cfgCoap.livingroomAddr
+		nodeAddr = livingroomAddr
 		break
 	default:
 		console.log('Err: Bad nodeName.')
 		return
 	}
 
-	coap.sendToNode(nodeAddr, cfgCoap.nodePort, url, val)
+	coap.sendToNode(nodeAddr, nodePort, url, val)
 	sendToUI(nodeName, url, val)
 }
 
 function cmdResetNodes(commands)
 {
-	coap.sendToNode(cfgCoap.frontdoorAddr, cfgCoap.nodePort, cfgCoap.lockSta, cfgCoap.valOff)
+	coap.sendToNode(frontdoorAddr, nodePort, cfgCoap.lockSta, cfgCoap.valOff)
 	sendToUI(cfgCoap.nodeFrontdoor, cfgCoap.lockSta, cfgCoap.valOff)
 
-	coap.sendToNode(cfgCoap.livingroomAddr, cfgCoap.nodePort, cfgCoap.lightSta, cfgCoap.valOff)
+	coap.sendToNode(livingroomAddr, nodePort, cfgCoap.lightSta, cfgCoap.valOff)
 	sendToUI(cfgCoap.nodeLivingroom, cfgCoap.lightSta, cfgCoap.valOff)
 }
 
@@ -257,7 +267,9 @@ const commands = {
 		description: '\tList all the resource in state and stateNew.',
 		handler: cmdShowState
 	},
-	'send': { // like: send f/l lock_sta 0/1
+	'send': {
+		// send f lock_sta 0/1
+		// send l light_sta 0/1
 		parameters: ['nodeName', 'url', 'value'],
 		description: '\tSend CoAP PUT message to Node',
 		handler: cmdSendToNode
