@@ -220,22 +220,25 @@ function cmdShowState()
 function cmdSendToNode(commands)
 {
 	var nodeName = commands[0]
+	var nodeAddr
 	var url = commands[1]
 	var val = commands[2]
 
 	switch (nodeName) {
 	case 'f':
 		nodeName = cfgCoap.nodeFrontdoor
+		nodeAddr = cfgCoap.frontdoorAddr
 		break
 	case 'l':
 		nodeName = cfgCoap.nodeLivingroom
+		nodeAddr = cfgCoap.livingroomAddr
 		break
 	default:
 		console.log('Err: Bad nodeName.')
 		return
 	}
 
-	coap.sendToNode(nodeName, cfgCoap.nodePort, url, val)
+	coap.sendToNode(nodeAddr, cfgCoap.nodePort, url, val)
 	sendToUI(nodeName, url, val)
 }
 
