@@ -22,20 +22,21 @@ var config = {}
 //      coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 temp con 25
 
 config.coap = {
-	  gwAddr:         'fdde:ba7a:b1e5:0:73e9:923:a21d:e66f' // Gateway's IPv6 address
+	  gwAddr:         'fdde:ba7a:b1e5:0:73e9:923:a21d:e66f'  // Gateway's IPv6 address
 	, frontdoorAddr:  'fdde:ba7a:b1e5:0:a5c9:5611:c34a:b41a' // Frontdoor's IPv6 address
-	, livingroomAddr: 'fdde:ba7a:b1e5:0:a861:c2b5:5e7f:9d5' // Livingroom's IPv6 address
+	, livingroomAddr: 'fdde:ba7a:b1e5:0:a861:c2b5:5e7f:9d5'  // Livingroom's IPv6 address
 	, localAddr:      '::1' // Localhost's IPv6 address
-	, nodePort:  5683 // use different port like 5684 if you are trying virtual nodes (NodeJs: vr_nodes.js)
-	, gwPort:    5683
+	, defaultPort:    5683
+	, gwPort:         5683
+	, nodePort:       5684  // use different port like 5684 if you are trying virtual nodes (NodeJs: vr_nodes.js)
 	, nodeFrontdoor:  'frontdoor'
 	, nodeLivingroom: 'livingroom'
-	, lockSta:  'lock_sta'
-	, lightSta: 'light_sta'
-	, temp:     'temp'
-	, valOn:      '1'
-	, valOff:     '0'
-	, valDefault: '0'
+	, lockSta:        'lock_sta'
+	, lightSta:       'light_sta'
+	, temp:           'temp'
+	, valOn:          '1'
+	, valOff:         '0'
+	, valDefault:     '0'
 }
 
 // Configuration of the Object Id
