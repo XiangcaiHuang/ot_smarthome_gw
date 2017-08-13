@@ -105,7 +105,7 @@ function deltaFromUI(thingName, stateObject)
 			switch (oId) {
 			case cfgObjectId.oIdLight:
 				url = cfgCoap.lockSta
-				coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
+				coap.sendToNode(cfgCoap.frontdoorAddr, cfgCoap.nodePort, url, newValue)
 
 				//update all app UI
 				sendToUI(cfgCoap.nodeFrontdoor, url, newValue)
@@ -118,7 +118,7 @@ function deltaFromUI(thingName, stateObject)
 			switch (oId) {
 			case cfgObjectId.oIdLight:
 				url = cfgCoap.lightSta
-				coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, newValue)
+				coap.sendToNode(cfgCoap.livingroomAddr, cfgCoap.nodePort, url, newValue)
 
 				//update all app UI
 				sendToUI(cfgCoap.nodeLivingroom, url, newValue)
@@ -220,31 +220,34 @@ function cmdShowState()
 function cmdSendToNode(commands)
 {
 	var nodeName = commands[0]
+	var nodeAddr
 	var url = commands[1]
 	var val = commands[2]
 
 	switch (nodeName) {
 	case 'f':
 		nodeName = cfgCoap.nodeFrontdoor
+		nodeAddr = cfgCoap.frontdoorAddr
 		break
 	case 'l':
 		nodeName = cfgCoap.nodeLivingroom
+		nodeAddr = cfgCoap.livingroomAddr
 		break
 	default:
 		console.log('Err: Bad nodeName.')
 		return
 	}
 
-	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, url, val)
+	coap.sendToNode(nodeAddr, cfgCoap.nodePort, url, val)
 	sendToUI(nodeName, url, val)
 }
 
 function cmdResetNodes(commands)
 {
-	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, cfgCoap.lockSta, cfgCoap.valOff)
+	coap.sendToNode(cfgCoap.frontdoorAddr, cfgCoap.nodePort, cfgCoap.lockSta, cfgCoap.valOff)
 	sendToUI(cfgCoap.nodeFrontdoor, cfgCoap.lockSta, cfgCoap.valOff)
 
-	coap.sendToNode(cfgCoap.localAddr, cfgCoap.nodePort, cfgCoap.lightSta, cfgCoap.valOff)
+	coap.sendToNode(cfgCoap.livingroomAddr, cfgCoap.nodePort, cfgCoap.lightSta, cfgCoap.valOff)
 	sendToUI(cfgCoap.nodeLivingroom, cfgCoap.lightSta, cfgCoap.valOff)
 }
 

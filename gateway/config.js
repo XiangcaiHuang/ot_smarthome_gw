@@ -15,16 +15,18 @@ var config = {}
 // Gateway's IPv6 address:
 //      fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3
 
-// Node command:
-//      coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 lock_btn con 1
-//      coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 light_btn con 2
+// Commands in simulated Nodes:
+//      coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 lock_sta con 1
+
+//      coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 light_sta con 0
+//      coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 temp con 25
 
 config.coap = {
-        gwAddr:         'fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3' // Gateway's IPv6 address
-      , frontdoorAddr:  'fdde:ba7a:b1e5:0:d7a3:1de2:916f:8d50' // Frontdoor's IPv6 address
-      , livingroomAddr: 'fdde:ba7a:b1e5:0:31a2:d832:9c48:59d5' // Livingroom's IPv6 address
+        gwAddr:         'fdde:ba7a:b1e5:0:c0c6:c401:ef37:6ce0' // Gateway's IPv6 address
+      , frontdoorAddr:  'fdde:ba7a:b1e5:0:d774:7ecd:2929:6a67' // Frontdoor's IPv6 address
+      , livingroomAddr: 'fdde:ba7a:b1e5:0:a861:c2b5:5e7f:9d5' // Livingroom's IPv6 address
       , localAddr: '::1' // Localhost's IPv6 address
-      , nodePort:  5684
+      , nodePort:  5683  // use different port like 5684 if you are trying virtual nodes (NodeJs: vr_nodes.js)
       , gwPort:    5683
       , nodeFrontdoor:  'frontdoor'
       , nodeLivingroom: 'livingroom'

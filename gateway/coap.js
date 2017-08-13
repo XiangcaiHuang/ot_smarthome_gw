@@ -13,7 +13,7 @@ const coap    = require('coap')
 
 function serverStart(handleMessage)
 {
-	coapServer.listen(config.gwPort, config.localAddr, function() {
+	coapServer.listen(config.gwPort, config.gwAddr, function() {
 		console.log('Coap: Listening at port: ' + config.gwPort)
 	})
 
