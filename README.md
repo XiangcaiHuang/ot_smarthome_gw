@@ -1,4 +1,14 @@
 # OpenThread Smarthome Application Gateway and Web UI
+
+- [Overview](#overview)
+- [Prequisites](#prequisites)
+- [Usage](#usage)
+  - [Download](#download)
+  - [Run gateway](#run-gateway)
+  - [Run Freeboard](#run-freeboard)
+  - [Run virtual Thread Nodes](#run-virtual-thread-nodes)
+  - [Run simulated Thread Nodes](#run-simulated-thread-nodes)
+
 ## Overview
 - `./gateway` folder: OpenThread Smarthome Application Gateway source files.
 - `./freeboard` folder: Web UI. Just fork from [freeboard][30] by zxytddd. Exactly the same.
@@ -13,18 +23,18 @@ for running simulated nodes, the following are additional:
 - [wpantund][33] installed
 
 ## Usage
-### **Download**:
+### Download
 
 - Run git cmd and type `git clone https://github.com/XiangcaiHuang/ot_smarthome_gw.git`
 
-### Run **gateway**:
+### Run gateway
 
 - Goto `./gateway` folder.
 - Run a cmd prompt.
 - Type: `npm install` to install dependencies.
 - Type: `node gateway.js` to start gateway service.
 
-### Run **Freeboard**:
+### Run Freeboard
 
 - Run browser and type `127.0.0.1` to start Freeboard UI service. You can click the light on UI to control it's status to be ON or OFF.
 
@@ -36,7 +46,7 @@ Freeboard UI start:
 
 ![ui_start][2]
 
-### Run **virtual Thread Nodes**:
+### Run virtual Thread Nodes
 
 - Modify in `./gateway/gateway.js`:
 
@@ -91,7 +101,7 @@ Command *send* temp to UI:
 
 ![node_send_temp][6]
 
-### Run **simulated Thread Nodes**:
+### Run simulated Thread Nodes
 
 - Modify in `./gateway/gateway.js`:
 
