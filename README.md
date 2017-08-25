@@ -145,7 +145,7 @@ Command *send* temp to UI:
 		
 			![wpanctl_join_new_network][16]
 		
-		3. Find out vitual network interface IPv6 address and config:
+		3. Find out virtual network interface IPv6 address and config:
 		
 			![vr_network_interface][18]
 		
