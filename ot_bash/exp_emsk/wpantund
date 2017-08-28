@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "wpantund Start."
+
+sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "/dev/ttyUSB1" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName utun6

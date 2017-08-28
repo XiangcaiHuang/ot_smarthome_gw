@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "wpantund Start."
+
+cd /mnt/hgfs/Shared/openthread
+sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "system:output/x86_64-unknown-linux-gnu/bin/ot-ncp-ftd 3" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName utun6

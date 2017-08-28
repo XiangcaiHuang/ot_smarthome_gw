@@ -1,0 +1,9 @@
+#!/bin/bash
+echo "gateway Start."
+echo "Enter commands on the CLI, like:
+	show
+	send  : send f lock_sta 0/1
+	reset
+"
+cd /mnt/hgfs/Shared/ot_smarthome_gw/gateway
+sudo nodejs ./gateway.js
