@@ -1,0 +1,20 @@
+#!/bin/bash
+echo "FrontDoor Node Start."
+echo "Enter commands on the CLI, like:
+	panid 0x1234
+	ifconfig up
+	thread start
+	thread stop
+	exit
+
+	state
+	ipaddr
+	ping IPv6
+
+	coap start
+	coap resource lock_sta
+	coap put gwAddr lock_sta con 1
+"
+
+cd /mnt/hgfs/Shared/openthread
+./output/x86_64-unknown-linux-gnu/bin/ot-cli-ftd 1

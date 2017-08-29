@@ -199,11 +199,18 @@ function sendToUI(nodeName, url, val)
 	}
 
 	if (val == cfgCoap.valOn) {
+		//value of lockSta and lightSta: 0/1
+		//transfer it to false/ture
 		val = true
 	} else if (val == cfgCoap.valOff) {
 		val = false
 	} else {
 		val = parseInt(val)
+		if (url == cfgCoap.temp) {
+			//temperature format: 293
+			//transfer it to 29.3'C
+			val = val/10.0
+		}
 	}
 	stateNew[endpoint][oId][iId][rId] = val
 
