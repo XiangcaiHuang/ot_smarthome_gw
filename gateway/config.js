@@ -22,7 +22,7 @@ var config = {}
 //      coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 temp con 25
 
 config.coap = {
-	  gwAddr:         'fdde:ad00:beef:0:4f6e:7e53:67c8:f5b0'  // Gateway's IPv6 address
+	  gwAddr:         'fdde:ad00:beef:0:3b33:8a2f:8e4:67d3'  // Gateway's IPv6 address
 	, frontdoorAddr:  'fdde:ad00:beef:0:63a8:7376:c6ad:828c'  // Frontdoor's IPv6 address
 	, livingroomAddr: 'fdde:ad00:beef:0:4f6e:7e53:67c8:f5b0' // Livingroom's IPv6 address
 	, localAddr:      '::1' // Localhost's IPv6 address
