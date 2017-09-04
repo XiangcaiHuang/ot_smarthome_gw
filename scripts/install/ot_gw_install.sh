@@ -30,8 +30,8 @@ sudo pip install pexpect
 echo "wpantund installing..."
 cd ${USER_ROOT}/wpantund
 sudo git checkout full/latest-release
-./configure --sysconfdir=/etc
-make
+sudo ./configure --sysconfdir=/etc
+sudo make
 sudo make install
 echo "wpantund installed! The version is: "
 wpantund -v
