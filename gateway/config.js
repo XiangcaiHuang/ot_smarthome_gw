@@ -52,7 +52,7 @@ config.ObjectId = {
 // Configuration of the http server
 //--------------------------------------------------
 config.httpServer = {
-	  port:   80
+	  port:   8080
 	, UIPath: '.././freeboard'
 }
 
