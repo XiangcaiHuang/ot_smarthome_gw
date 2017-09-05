@@ -1,5 +1,4 @@
 #!/bin/bash
-USER_ROOT=/home/pi
 BOOT_SYS_FILE=/etc/rc.local
 
 
@@ -13,8 +12,12 @@ nodejs -v
 echo -e "\nOpenThread Smarthome Gateway installing..."
 
 echo -e "\nwpantund downloading..."
-cd ${USER_ROOT}
-sudo git clone --recursive https://github.com/openthread/wpantund.git
+cd ${HOME}
+if [ ! -d "${HOME}/wpantund/" ];then
+	sudo git clone --recursive https://github.com/openthread/wpantund.git
+else
+	echo "wpantund existed!"
+fi
 echo "wpantund download finished!"
 
 echo "python-software-properties installing..."
@@ -28,7 +31,7 @@ sudo apt-get install -y --force-yes gcc-arm-none-eabi
 sudo pip install pexpect
 
 echo "wpantund installing..."
-cd ${USER_ROOT}/wpantund
+cd ${HOME}/wpantund
 sudo git checkout full/latest-release
 sudo ./configure --sysconfdir=/etc
 sudo make
@@ -38,9 +41,10 @@ wpantund -v
 wpanctl -v
 
 echo -e "\nEnvironments setup starting..."
-sudo chmod -R 777  ${USER_ROOT}/ot_smarthome_gw/scripts
+sudo chmod -R 777  ${HOME}/ot_smarthome_gw/scripts
 sudo chmod 777 ${BOOT_SYS_FILE}
-sudo sed -i "/fi/a ${USER_ROOT}/ot_smarthome_gw/scripts/startup/ot_gw_startup.sh >> ${USER_ROOT}/ot_smarthome_gw/debug"  ${BOOT_SYS_FILE}
+sudo sed -i "/ot_gw_startup/d" ${BOOT_SYS_FILE}
+sudo sed -i "/fi/a ${HOME}/ot_smarthome_gw/scripts/startup/ot_gw_startup.sh >> ${HOME}/ot_smarthome_gw/debug"  ${BOOT_SYS_FILE}
 echo "Environments setuped!"
 
 echo -e "\nOpenThread Smarthome Gateway installed!"

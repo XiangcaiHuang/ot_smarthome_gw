@@ -1,10 +1,11 @@
 #!/bin/bash
-ot_gw_file_path=/home/pi/ot_smarthome_gw
+USER_ROOT=/home/pi
+SOCKET_PATH=/dev/ttyUSB1
 
 echo -e "\nOpenThread Smarthome Gateway Starting..."
 
 echo -e "\nwpantund starting..."
-sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "/dev/ttyUSB1" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName utun6 &
+sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "${SOCKET_PATH}" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName utun6 &
 echo "wpantund started!"
 sleep 5s
 
@@ -18,7 +19,7 @@ echo "wpanctl exited!"
 sleep 5s
 
 echo -e "\ngateway starting..."
-cd ${ot_gw_file_path}/gateway
+cd ${USER_ROOT}/ot_smarthome_gw/gateway
 sudo nodejs ./gateway.js &
 echo "gateway started!"
 sleep 5s

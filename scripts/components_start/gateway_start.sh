@@ -1,5 +1,4 @@
 #!/bin/bash
-ot_gw_file_path=/home/pi/ot_smarthome_gw
 
 echo -e "\ngateway starting..."
 echo "Enter commands on the CLI, like:
@@ -8,7 +7,7 @@ echo "Enter commands on the CLI, like:
 	reset
 "
 
-cd ${ot_gw_file_path}/gateway
+cd ${HOME}/ot_smarthome_gw/gateway
 sudo nodejs ./gateway.js
 
 echo -e "\ngateway exited!"
