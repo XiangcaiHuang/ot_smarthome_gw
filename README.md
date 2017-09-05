@@ -5,7 +5,7 @@
 - [Hardware Connection](#hardware-connection)
 - [Usage](#usage)
   - [Run Thread Nodes](#run-thread-nodes)
-  - [Run gateway](#run-gateway)
+  - [Run Gateway](#run-gateway)
 	    - [Install Git](#install-git)
 	    - [Download Gateway](#download-gateway)
 	    - [Install and Run Gateway](#intall-and-run-gateway)
@@ -57,11 +57,23 @@ Before installing Gateway, it is recommanded to reinstall the operating system (
 
 #### Install and Run Gateway
 
-	cd ot_smarthome_gw/scripts/install/
+	cd ~/ot_smarthome_gw/gateway/
+	sudo npm install
+
+	cd ~/ot_smarthome_gw/scripts/install/
 	sudo chmod +x ot_gw_install.sh
 	./ot_gw_install.sh
 
-The installation process takes about 1.5 ~ 2 hours for the first time, wait with patience please. And it will reboot after installation finished. After that, the Gateway (wpantund, wpanctl, Nodejs gateway) and NCP will run automatically after the power supplied to the Raspi (The NCP powered by Raspi via USB cable). It is due to the installation process modifys the `/etc/rc.local` which is a shell script always run after Linux starts.
+The installation process takes about 1 ~ 2 hours for the first time, wait with patience please. And it will reboot after installation finished. After that, the Gateway (wpantund, wpanctl, Nodejs gateway) and NCP will run automatically after the power supplied to the Raspi (The NCP powered by Raspi via USB cable). It is due to the installation process modifys the `/etc/rc.local` which is a shell script always run after Linux starts.
+
+> Notice: 
+> 
+> The socket path must be identified when starts the wpantund, like here is *ttyUSB1*, which is a descriptor stands for NCP's UART interface. It is better to check it before install Gateway. Enter **ls /dev/** on the Raspi to find it out. There might be two *ttyUSB**, such as *ttyUSB0* and *ttyUSB1*. One of them is right. If it is not *ttyUSB1*, modify the scripts of `ot_gw_startup.sh`, `wpantund_start.sh` as the following shows:
+> 
+	SOCKET_PATH=/dev/ttyUSB1
+>
+> See [embARC OpenThread NCP example's README][7] for more information.
+
 
 #### Run Freeboard UI
 
@@ -92,6 +104,7 @@ See [embARC OpenThread Smarthome Application's README][6] for more information.
 [4]: https://www.raspberrypi.org/products/raspberry-pi-3-model-b/ "Raspberry Pi 3"
 [5]: https://www.raspberrypi.org/downloads/raspbian/ "Raspbian Stretch Lite"
 [6]: https://github.com/XiangcaiHuang/embarc_applications/blob/master/ot_smarthome_multinode/README.md "embARC OpenThread Smarthome Application's README"
+[7]: https://github.com/foss-for-synopsys-dwc-arc-processors/embarc_osp/tree/master/example/baremetal/openthread/ncp "embARC OpenThread NCP example's README"
 
 [30]: ./img/hardware_connection.jpg "hardware_connection"
 [31]: ./img/start_ui.PNG "start_ui"
