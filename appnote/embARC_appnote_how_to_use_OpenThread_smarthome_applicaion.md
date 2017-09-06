@@ -31,9 +31,9 @@ This document is written for instructing the users to learn how to use the embAR
 ### Required Software
 - Metaware or ARC GNU Toolset
 - Serial port terminal, using Tera-Term here
-- Xshell
-- Win32 Disk Imager
-- SD Card Formatter
+- [Xshell][11]
+- [Win32 Disk Imager][12]
+- [SD Card Formatter][13]
 - [OpenThread Smarthome Gateway][5]
 - [embARC OpenThread NCP example][6]
 - [embARC OpenThread Smarthome Multinode Application][7]
@@ -197,6 +197,9 @@ See [embARC OpenThread Smarthome Multinode Application][7] for more information.
 [8]: http://embarc.org/embarc_osp/doc/embARC_Document/html/group___e_m_b_a_r_c___a_p_p___b_a_r_e_m_e_t_a_l___b_o_o_t_l_o_a_d_e_r.html    "embARC OSP **Bootloader** example"
 [9]: https://github.com/foss-for-synopsys-dwc-arc-processors/embarc_osp/blob/master/example/baremetal/openthread/ncp/main.c "embARC OpenThread NCP example' main.c"
 [10]: https://www.raspberrypi.org/downloads/raspbian/ "Raspbian Stretch Lite"
+[11]: http://www.netsarang.com/download/down_xsh.html "Xshell"
+[12]: https://sourceforge.net/projects/win32diskimager/ "Win32 Disk Imager"
+[13]: https://www.sdcard.org/downloads/formatter_4/eula_windows/index.html "SD Card Formatter"
 
 [30]: ./img/hardware_connection.jpg "hardware_connection"
 [31]: ./img/format_sd_card.PNG "format_sd_card"
