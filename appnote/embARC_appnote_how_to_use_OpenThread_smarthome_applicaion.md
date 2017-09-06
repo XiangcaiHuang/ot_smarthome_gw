@@ -83,68 +83,70 @@ Here take **EMSK2.3 - ARC EM7D** with GNU Toolset for this application.
 
 2. Insert the SD card (recommended for more than 8G) of Raspi to *SD card Reader*. Format it using *SD Card Formatter*.
 
-![format_sd_card][31]
+	![format_sd_card][31]
 
 3. Making a start card for Raspi using *Win32 Disk Imager*. Choose the img file, like  *2017-07-05-raspbian-jessie-lite.img* here. Then Click *Write* to make a start card.
+
+	![make_start_card][32]
 
 ### Setup Remote Control of the Raspi
 1. Insert the SD card of Raspi to *SD card Reader*. Create a file with name "ssh" in boot partition.
 
-![create_ssh_file][32]
+	![create_ssh_file][33]
 
 2. Insert the SD card to the Raspi. Connect Raspi with the PC host via Ethernet cable, power the Raspi.
 
 3. Connect PC host with the network via WiFi. Open the *Network and Sharing Center*:
 
-	![network_and_sharing_center][33]
+	![network_and_sharing_center][34]
 
 	Click the *Wi-Fi* icon, enter *Wi-Fi Status* panel:
 
-	![wifi_status][34]
+	![wifi_status][35]
 
 	Click *Properties* button, enter *Wi-Fi Properties* panel. Go to *Sharing* settings, modify them as the following shows:
 
-	![wifi_properties][35]
+	![wifi_properties][36]
 
 4. Find out the IP address of the Raspi. Open the *Command Prompt* on the PC, enter `arp -a` to find it out. If there are showing you more than one IP with the prefix: *192.168.137.**, only one of them is right.
 
-	![arp_a][36]
+	![arp_a][37]
 
 	Try to ping each of them to find it out. Here it is *192.168.137.81*.
 
-	![ping_to_find_out_raspi_ip][37]
+	![ping_to_find_out_raspi_ip][38]
 
 5. Open the *Xshell*, Click *File-Open* to create a new session.
 	
-	![open_xshell][38]
+	![open_xshell][39]
 
 	Click *Properties* and fill in the IP address in the *Host* box, Click *OK*.
 
-	![xshell_new_session][39]
+	![xshell_new_session][40]
 
 	Click *Connect* on the *Sessions* panel. Enter the username (pi) and password (raspberry) of the Raspi in the pop-up window. Then, it can login the Raspi.
 
-	![xshell_login][40]
+	![xshell_login][41]
 
 ### Install Gateway
 1. Install Git. Enter the following commands in the *Xshell* panel.
 
-	sudo apt-get update
-	sudo apt-get install git
+		sudo apt-get update
+		sudo apt-get install git
 
 2. Download Gateway. Enter the following commands in the *Xshell* panel.
 
-	cd ~
-	git clone https://github.com/XiangcaiHuang/ot_smarthome_gw.git
+		cd ~
+		git clone https://github.com/XiangcaiHuang/ot_smarthome_gw.git
 
 3. Install and Run the Gateway. Enter the following commands in the *Xshell* panel.
 
-	cd ~/ot_smarthome_gw/gateway/
-	sudo npm install
-
-	cd ~/ot_smarthome_gw/scripts/install/
-	sudo chmod +x ot_gw_install.sh
-	./ot_gw_install.sh
+		cd ~/ot_smarthome_gw/gateway/
+		sudo npm install
+	
+		cd ~/ot_smarthome_gw/scripts/install/
+		sudo chmod +x ot_gw_install.sh
+		./ot_gw_install.sh
 
 The installation process takes about 1 ~ 2 hours for the first time. And it will reboot after installation finished. After that, the Gateway and NCP will run automatically after the power supplied to the Raspi.
 
@@ -160,7 +162,7 @@ Power the Raspi, then the Gateway and NCP will run automatically.
 #### Run Freeboard UI
 Open the *Browser* on the PC, enter IP address and port, like *192.168.137.81:8080* here. Then the UI can be accessed.
 
-![start_ui][41]
+![start_ui][42]
 
 > Notice:
 >
@@ -168,7 +170,7 @@ Open the *Browser* on the PC, enter IP address and port, like *192.168.137.81:80
 
 ### Interaction
 
-![running_ui][42]
+![running_ui][43]
 
 - On the frontDoor Node
 	- Press **Button L** to control the Lock and send its status to UI. LED0 shows the Lock status.
@@ -198,14 +200,15 @@ See [embARC OpenThread Smarthome Multinode Application][7] for more information.
 
 [30]: ./img/hardware_connection.PNG "hardware_connection"
 [31]: ./img/format_sd_card.PNG "format_sd_card"
-[32]: ./img/create_ssh_file.PNG "create_ssh_file"
-[33]: ./img/network_and_sharing_center.PNG "network_and_sharing_center"
-[34]: ./img/wifi_status.PNG "wifi_status"
-[35]: ./img/wifi_properties.PNG "wifi_properties"
-[36]: ./img/arp_a.PNG "arp_a"
-[37]: ./img/ping_to_find_out_raspi_ip.PNG "ping_to_find_out_raspi_ip"
-[38]: ./img/open_xshell.PNG "open_xshell"
-[39]: ./img/xshell_new_session.PNG "xshell_new_session"
-[40]: ./img/xshell_login.PNG "xshell_login"
-[41]: ./img/start_ui.PNG "start_ui"
-[42]: ./img/running_ui.png "running_ui"
+[32]: ./img/make_start_card.png "make_start_card"
+[33]: ./img/create_ssh_file.PNG "create_ssh_file"
+[34]: ./img/network_and_sharing_center.PNG "network_and_sharing_center"
+[35]: ./img/wifi_status.PNG "wifi_status"
+[36]: ./img/wifi_properties.PNG "wifi_properties"
+[37]: ./img/arp_a.PNG "arp_a"
+[38]: ./img/ping_to_find_out_raspi_ip.PNG "ping_to_find_out_raspi_ip"
+[39]: ./img/open_xshell.PNG "open_xshell"
+[40]: ./img/xshell_new_session.PNG "xshell_new_session"
+[41]: ./img/xshell_login.PNG "xshell_login"
+[42]: ./img/start_ui.PNG "start_ui"
+[43]: ./img/running_ui.png "running_ui"
