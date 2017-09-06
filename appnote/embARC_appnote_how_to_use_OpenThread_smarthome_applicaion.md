@@ -198,7 +198,7 @@ See [embARC OpenThread Smarthome Multinode Application][7] for more information.
 [9]: https://github.com/foss-for-synopsys-dwc-arc-processors/embarc_osp/blob/master/example/baremetal/openthread/ncp/main.c "embARC OpenThread NCP example' main.c"
 [10]: https://www.raspberrypi.org/downloads/raspbian/ "Raspbian Stretch Lite"
 
-[30]: ./img/hardware_connection.PNG "hardware_connection"
+[30]: ./img/hardware_connection.jpg "hardware_connection"
 [31]: ./img/format_sd_card.PNG "format_sd_card"
 [32]: ./img/make_start_card.png "make_start_card"
 [33]: ./img/create_ssh_file.PNG "create_ssh_file"
