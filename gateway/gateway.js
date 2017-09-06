@@ -214,14 +214,22 @@ function sendToUI(nodeName, url, val)
 	}
 	stateNew[endpoint][oId][iId][rId] = val
 
-	var stateChange = utils.getDifferent(stateNew, state)
-	if (stateChange !== undefined) {
-		console.log("GW: Send state changed to UI.")
-		console.log("\tstate changed : " + JSON.stringify(stateChange))
+	// var stateChange = utils.getDifferent(stateNew, state)
+	// if (stateChange !== undefined) {
+	// 	console.log("GW: Send state changed to UI.")
+	// 	console.log("\tstate changed : " + JSON.stringify(stateChange))
 
-		wsServer.send(stateChange)       //send to UI
+	// 	wsServer.send(stateChange)       //send to UI
+	// 	state = utils.deepCopy(stateNew) //update state
+	// }
+	
+	if (stateNew !== undefined) {
+		console.log("GW: Send state changed to UI.")
+		console.log("\tstate changed : " + JSON.stringify(stateNew))
+
+		wsServer.send(stateNew)          //send to UI
 		state = utils.deepCopy(stateNew) //update state
-	} 
+	}
 }
 
 /******************** Commands **************************/

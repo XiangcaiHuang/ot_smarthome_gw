@@ -4,13 +4,13 @@
 - [Prequisites](#prequisites)
 - [Hardware Connection](#hardware-connection)
 - [Usage](#usage)
-  - [Run Thread Nodes](#run-thread-nodes)
-  - [Run Gateway](#run-gateway)
-	    - [Install Git](#install-git)
-	    - [Download Gateway](#download-gateway)
-	    - [Install and Run Gateway](#intall-and-run-gateway)
-	    - [Run Freeboard UI](#run-freeboard-ui)
-  - [Interact using EMSK and UI](#interact-using-emsk-and-ui)
+	- [Run Thread Nodes](#run-thread-nodes)
+	- [Run Gateway](#run-gateway)
+		- [Install Git](#install-git)
+		- [Download Gateway](#download-gateway)
+		- [Install and Run Gateway](#intall-and-run-gateway)
+		- [Run Freeboard UI](#run-freeboard-ui)
+	- [Interact using EMSK and UI](#interact-using-emsk-and-ui)
 
 ## Overview
 - `./gateway` folder: OpenThread Smarthome Application Gateway's source files.
@@ -43,7 +43,7 @@
 Run two Thread Nodes, including the **frontDoor** Node and **livingRoom** Node. See [embARC OpenThread Smarthome Application's README][6] to learn how to start them.
 
 ### Run Gateway
-Before installing Gateway, it is recommanded to reinstall the operating system (recent [Raspbian Stretch Lite][5]) on the Raspi, and leave the default username (**pi**) and password (**raspberry**). And ensure that the Raspi is connected to the network (Shared network with the PC via Ethernet cable here).
+Before installing Gateway, it is recommanded to reinstall the operating system (recent [Raspbian Stretch Lite][5]) on the Raspi, and leave the default username (**pi**) and password (**raspberry**). And ensure that the Raspi is able to access the network (Shared network with PC via Ethernet cable here).
 
 #### Install Git
 
@@ -68,32 +68,40 @@ The installation process takes about 1 ~ 2 hours for the first time, wait with p
 
 > Notice: 
 > 
-> The socket path must be identified when starts the wpantund, like here is *ttyUSB1*, which is a descriptor stands for NCP's UART interface. It is better to check it before install Gateway. Enter **ls /dev/** on the Raspi to find it out. There might be two *ttyUSB**, such as *ttyUSB0* and *ttyUSB1*. One of them is right. If it is not *ttyUSB1*, modify the scripts of `ot_gw_startup.sh`, `wpantund_start.sh` as the following shows:
+> The socket path must be identified when starts the Gateway (wpantund), like here it is *ttyUSB1*, which is a descriptor stands for NCP's UART interface. It is better to check it before install Gateway. Enter **ls /dev/** in the Command Line Interface of the Raspi to find it out. There may be two *ttyUSB**, such as *ttyUSB0* and *ttyUSB1*. Only one of them is right. If it is not *ttyUSB1*, modify the scripts of `./scripts/startup/ot_gw_startup.sh`, `./scripts/components_start/wpantund_start.sh` as the following shows:
 > 
-	SOCKET_PATH=/dev/ttyUSB1
+>		 SOCKET_PATH=/dev/ttyUSB1
 >
 > See [embARC OpenThread NCP example's README][7] for more information.
 
 
 #### Run Freeboard UI
 
-If the installation is successful and the system is running, the UI can be access by enter Raspi's IPv4 address and port in the browser, like *192.168.137.116:8080* here.
+If the installation is successful and the system is running now, then the UI can be accessed by enter Raspi's IPv4 address and port in the browser, like *192.168.137.116:8080* here.
 
 ![start_ui][31]
 
 Now, there are nothing about the two Nodes on the UI. Press the Button L on any Node, then the components will be loaded.
+
+> Notice:
+
+> Sometimes, the Gateway might start failed after installation reboot. Don't have to install again in this situation, Just try to reboot the Raspi again.
 
 ### Interact using EMSK and UI
 
 ![running_ui][32]
 
 - On the frontDoor Node
-  - Press Button L to control the Lock and send the status to UI. LED0 shows the Lock status.
+	- Press **Button L** to control the Lock and send its status to UI. LED0 shows the Lock status.
 - On the livingRoom Node
-  - Press Button L to control the Light and send the status to UI. LED0 shows the Light status.
-  - Press Button R to start to send or stop sending the Temperature value to UI every 5s. LED1 blinking when it reports.
+	- Press **Button L** to control the Light and send its status to UI. LED0 shows the Light status.
+	- Press **Button R** to start/stop sending the **Temperature value** to UI every 5s. LED1 blinking when it reports data.
 - On the Freeboard UI
-  - Control Lock status and Light status by clicking on the light components.
+	- Control **Lock status** and **Light status** by clicking on the according components.
+
+> Notice:
+>
+> Before restart Gateway, it is better to restart all Thread Nodes.
 
 See [embARC OpenThread Smarthome Application's README][6] for more information.
 
