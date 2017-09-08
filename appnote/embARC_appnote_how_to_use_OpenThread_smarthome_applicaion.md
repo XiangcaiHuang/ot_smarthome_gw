@@ -31,7 +31,6 @@ This document is written for instructing the users to learn how to use the embAR
 ### Required Software
 - Metaware or ARC GNU Toolset
 - Serial port terminal, using Tera-Term here
-- [Xshell][11]
 - [Win32 Disk Imager][12]
 - [SD Card Formatter][13]
 - [OpenThread Smarthome Gateway][5]
@@ -72,14 +71,14 @@ Here take **EMSK2.3 - ARC EM7D** with GNU Toolset for this application.
 
 > Notice:
 > 
-> **Before making boot.bin for NCP**, it is necessary to modify the source file in [embARC OpenThread NCP example' main.c][9] as the following shows:
+> 　**Before making boot.bin for NCP**, it is necessary to modify the source file in [embARC OpenThread NCP example' main.c][9] as the following shows:
 > 
 > 		149    PlatformInit(argc, argv, NUM_NCP);
 >
-> It is for generating pseudo random number for OpenThred automatically.
+> 　It is for generating pseudo random number for OpenThread automatically.
 
 ### Install OS on the Raspi
-1. Download the recent [Raspbian Stretch Lite][10], and get the img files, like *2017-07-05-raspbian-jessie-lite.img* here.
+1. Download the recent [Raspbian Stretch Lite][10], and get the img files, using *2017-07-05-raspbian-jessie-lite.img* here.
 
 2. Insert the SD card (recommended for more than 8G) of Raspi to *SD card Reader*. Format it using *SD Card Formatter*.
 
@@ -90,7 +89,7 @@ Here take **EMSK2.3 - ARC EM7D** with GNU Toolset for this application.
 	![make_start_card][32]
 
 ### Setup Remote Control of the Raspi
-1. Insert the SD card of Raspi to *SD card Reader*. Create a file with name "ssh" in boot partition.
+1. Insert the SD card of Raspi to *SD card Reader*. Create a file with name "**ssh**" in boot partition.
 
 	![create_ssh_file][33]
 
@@ -116,30 +115,34 @@ Here take **EMSK2.3 - ARC EM7D** with GNU Toolset for this application.
 
 	![ping_to_find_out_raspi_ip][38]
 
-5. Open the *Xshell*, Click *File-Open* to create a new session.
+5. Open the *Tera-Term*, Click *File - New connection* to create a new connection, and fill in the IP address in the *Host* box, Click *OK*.
 	
-	![open_xshell][39]
+	![tera_term_new_connection][39]
 
-	Click *Properties* and fill in the IP address in the *Host* box, Click *OK*.
+	Then, it will show you a pop-up window named *SECURITY WARNING*, click *Continue* to ignore it.
 
-	![xshell_new_session][40]
+	![tera_term_ignore_warning][40]
 
-	Click *Connect* on the *Sessions* panel. Enter the username (pi) and password (raspberry) of the Raspi in the pop-up window. Then, it can login the Raspi.
+	In the *SSH Authentication* window, enter the *User name* (**pi**) and *Passphrase* (**raspberry**).
 
-	![xshell_login][41]
+	![tera_term_info][41]
+
+	Click *OK* to login the Raspi.
+
+	![tera_term_login][42]
 
 ### Install Gateway
-1. Install Git. Enter the following commands in the *Xshell* panel.
+1. Install Git. Enter the following commands in the *Tera-Term* panel.
 
 		sudo apt-get update
 		sudo apt-get install git
 
-2. Download Gateway. Enter the following commands in the *Xshell* panel.
+2. Download Gateway. Enter the following commands in the *Tera-Term* panel.
 
 		cd ~
 		git clone https://github.com/XiangcaiHuang/ot_smarthome_gw.git
 
-3. Install and Run the Gateway. Enter the following commands in the *Xshell* panel.
+3. Install and Run the Gateway. Enter the following commands in the *Tera-Term* panel.
 
 		cd ~/ot_smarthome_gw/gateway/
 		sudo npm install
@@ -148,41 +151,53 @@ Here take **EMSK2.3 - ARC EM7D** with GNU Toolset for this application.
 		sudo chmod +x ot_gw_install.sh
 		./ot_gw_install.sh
 
-The installation process takes about 1 ~ 2 hours for the first time. And it will reboot after installation finished. After that, the Gateway and NCP will run automatically after the power supplied to the Raspi.
+The installation process takes about 1 ~ 2 hours for the first time. **Make sure the PC Host can access network** via Wi-Fi during installation. It will reboot after installation finished. After that, the Gateway and NCP will run automatically after the power supplied to the Raspi.
 
 See [OpenThread Smarthome Gateway][5] and [embARC OpenThread NCP example][6] for more detailed information.
 
 ### Run This Application
+> Notice:
+> 
+> 　The startup order is:    **Thread Nodes** (2 EMSKs), **NCP** (EMSK), **Gateway** (Raspi).
+>
+> 　If you want to restart one of them, please **restart all of them** in the order stated above.
+
 #### Run Thread Nodes
 Power the frontDoor Node and livingRoom Node, open two Tera-Term for them. The Thread Nodes will be ready after a few minutes later.
+
+> Notice:
+> 　Use AC adapter to ensure a steady power supply.
 
 #### Run Gateway and NCP
 Power the Raspi, then the Gateway and NCP will run automatically.
 
+> Notice:
+> 　Use AC adapter to ensure a steady power supply.
+
 #### Run Freeboard UI
 Open the *Browser* on the PC, enter IP address and port, like *192.168.137.81:8080* here. Then the UI can be accessed.
 
-![start_ui][42]
+![start_ui][43]
 
 > Notice:
 >
-> Sometimes, the Gateway may start failed after installation reboot. Don't have to install again in this situation, just try to reboot the Raspi again.
+> 　Sometimes, the Gateway may start failed after installation reboot. Don't have to install again in this situation, just try to reboot the Raspi again.
 
 ### Interaction
 
-![running_ui][43]
+![running_ui][44]
 
 - On the frontDoor Node
 	- Press **Button L** to control the Lock and send its status to UI. LED0 shows the Lock status.
 - On the livingRoom Node
 	- Press **Button L** to control the Light and send its status to UI. LED0 shows the Light status.
 	- Press **Button R** to start/stop sending the **Temperature value** to UI every 5s. LED1 blinking when it reports data.
+
+	> Notice:
+	> 　The default does not report the **Temperature value** to UI, press **Button R** to enable it.
+
 - On the Freeboard UI
 	- Control **Lock status** and **Light status** by clicking on the according components.
-
-> Notice:
->
-> Before restart Gateway, it is better to restart all Thread Nodes.
 
 See [embARC OpenThread Smarthome Multinode Application][7] for more information.
 
@@ -197,7 +212,6 @@ See [embARC OpenThread Smarthome Multinode Application][7] for more information.
 [8]: http://embarc.org/embarc_osp/doc/embARC_Document/html/group___e_m_b_a_r_c___a_p_p___b_a_r_e_m_e_t_a_l___b_o_o_t_l_o_a_d_e_r.html    "embARC OSP **Bootloader** example"
 [9]: https://github.com/foss-for-synopsys-dwc-arc-processors/embarc_osp/blob/master/example/baremetal/openthread/ncp/main.c "embARC OpenThread NCP example' main.c"
 [10]: https://www.raspberrypi.org/downloads/raspbian/ "Raspbian Stretch Lite"
-[11]: http://www.netsarang.com/download/down_xsh.html "Xshell"
 [12]: https://sourceforge.net/projects/win32diskimager/ "Win32 Disk Imager"
 [13]: https://www.sdcard.org/downloads/formatter_4/eula_windows/index.html "SD Card Formatter"
 
@@ -210,8 +224,9 @@ See [embARC OpenThread Smarthome Multinode Application][7] for more information.
 [36]: ./img/wifi_properties.PNG "wifi_properties"
 [37]: ./img/arp_a.PNG "arp_a"
 [38]: ./img/ping_to_find_out_raspi_ip.PNG "ping_to_find_out_raspi_ip"
-[39]: ./img/open_xshell.PNG "open_xshell"
-[40]: ./img/xshell_new_session.PNG "xshell_new_session"
-[41]: ./img/xshell_login.PNG "xshell_login"
-[42]: ./img/start_ui.PNG "start_ui"
-[43]: ./img/running_ui.png "running_ui"
+[39]: ./img/tera_term_new_connection.PNG "tera_term_new_connection"
+[40]: ./img/tera_term_ignore_warning.PNG "tera_term_ignore_warning"
+[41]: ./img/tera_term_info.PNG "tera_term_info"
+[42]: ./img/tera_term_login.PNG "tera_term_login"
+[43]: ./img/start_ui.PNG "start_ui"
+[44]: ./img/running_ui.png "running_ui"
