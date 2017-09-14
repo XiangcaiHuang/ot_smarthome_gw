@@ -143,9 +143,6 @@ Here take **EMSK2.3 - ARC EM7D** with GNU Toolset for this application.
 		git clone https://github.com/XiangcaiHuang/ot_smarthome_gw.git
 
 3. Install and Run the Gateway. Enter the following commands in the *Tera-Term* panel.
-
-		cd ~/ot_smarthome_gw/gateway/
-		sudo npm install
 	
 		cd ~/ot_smarthome_gw/scripts/install/
 		sudo chmod +x ot_gw_install.sh
