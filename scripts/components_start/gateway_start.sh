@@ -8,6 +8,6 @@ echo "Enter commands on the CLI, like:
 "
 
 cd ${HOME}/ot_smarthome_gw/gateway
-sudo nodejs ./gateway.js
+sudo node ./gateway.js
 
 echo -e "\ngateway exited!"
