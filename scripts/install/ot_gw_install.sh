@@ -3,10 +3,27 @@ BOOT_SYS_FILE=/etc/rc.local
 
 
 echo -e "\nNodejs installing..."
-curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
-sudo apt install nodejs
+#curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+#sudo apt install nodejs
+cd ${HOME}
+if [ ! -d "/usr/local/node/" ];then
+	wget https://nodejs.org/dist/latest-v7.x/node-v7.10.1-linux-armv7l.tar.gz
+	tar -xvf node-v7.10.1-linux-armv7l.tar.gz
+	sudo mv node-v7.10.1-linux-armv7l /usr/local/node
+	sudo rm node-v7.10.1-linux-armv7l.tar.gz
+else
+	echo "node installed!"
+fi
+echo PATH=$PATH:/usr/local/node/bin >> ~/.bashrc
+source .bashrc
+sudo ln -s /usr/local/node/bin/node /usr/bin/node
+sudo ln -s /usr/local/node/bin/npm /usr/bin/npm
 echo "Nodejs installed! The vesion is: "
-nodejs -v
+node -v
+npm -v
+
+cd ${HOME}/ot_smarthome_gw/gateway/
+sudo npm install
 
 
 echo -e "\nOpenThread Smarthome Gateway installing..."

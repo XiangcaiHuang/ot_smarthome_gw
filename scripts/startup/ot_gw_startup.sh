@@ -20,7 +20,7 @@ sleep 5s
 
 echo -e "\ngateway starting..."
 cd ${USER_ROOT}/ot_smarthome_gw/gateway
-sudo nodejs ./gateway.js &
+sudo node ./gateway.js &
 echo "gateway started!"
 sleep 5s
 
