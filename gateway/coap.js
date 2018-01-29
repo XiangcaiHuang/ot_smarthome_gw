@@ -12,12 +12,12 @@ const coap    = require('coap')
     , coapServer  = coap.createServer({ type: 'udp6' })
 
 // for simulated nodes
-var   gwAddr = config.gwAddr
-    , gwPort = config.gwPort
+// var   gwAddr = config.gwAddr
+//     , gwPort = config.gwPort
 
 // for virtual nodes (NodeJs)
-// var   gwAddr = config.localAddr
-//     , gwPort = config.gwPort
+var   gwAddr = config.localAddr
+    , gwPort = config.gwPort
 
 function serverStart(handleMessage)
 {

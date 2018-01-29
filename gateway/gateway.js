@@ -19,26 +19,34 @@ var   stateNew = require('./state').stateNew
     , state    = require('./state').state
 
 // for simulated nodes
-var   frontdoorAddr  = cfgCoap.frontdoorAddr
-    , livingroomAddr = cfgCoap.livingroomAddr
-    , nodePort = cfgCoap.defaultPort
+// var   wnAddr   = cfgCoap.wnAddr
+//     , lnAddr   = cfgCoap.lnAddr
+//     , nodePort = cfgCoap.defaultPort
 
 // for virtual nodes (NodeJs)
-// var   frontdoorAddr  = cfgCoap.localAddr
-//     , livingroomAddr = cfgCoap.localAddr
-//     , nodePort = cfgCoap.nodePort
+var   wnAddr   = cfgCoap.localAddr
+    , lnAddr   = cfgCoap.localAddr
+    , nodePort = cfgCoap.nodePort
 
 
 // must initialize the stateNew or it happen error
 function stateInit()
 {
 	stateNew = {
-		'frontdoor':{
-			"3311":{"0":{"5850": false}} // 'lock_sta'
+		"wn":{
+			"3303":{"0":{"5700":"37"   }},// btemp
+			"3346":{"0":{"5700":"0"    }},// hrate
+
+			"3300":{"0":{"5700":"0"    }},// state
+			"3323":{"0":{"5700":"2000" }},// motion
+
+			"3338":{"0":{"5800":"false"}},// whrate
+			"3339":{"0":{"5800":"false"}},// wbtemp
+			"3341":{"0":{"5800":"false"}},// wdownward
+			"3342":{"0":{"5800":"false"}} // awake
 		},
-		'livingroom':{
-			"3311":{"0":{"5850": false}},// 'light_sta'
-			"3303":{"0":{"5700": 0}}     // 'temp'
+		'ln':{
+			"3311":{"0":{"5850":"false"}} // lamp
 		}
 	}
 }
@@ -57,14 +65,32 @@ function coapMessageHandle(req, res)
 
 	if (method === 'PUT') {
 		switch(url){
-		case cfgCoap.lockSta:
-			sendToUI(cfgCoap.nodeFrontdoor, cfgCoap.lockSta, value)
+		case cfgCoap.Rbtemp:
+			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rbtemp, value)
 			break
-		case cfgCoap.lightSta:
-			sendToUI(cfgCoap.nodeLivingroom, cfgCoap.lightSta, value)
+		case cfgCoap.Rhrate:
+			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rhrate, value)
 			break
-		case cfgCoap.temp:
-			sendToUI(cfgCoap.nodeLivingroom, cfgCoap.temp, value)
+		case cfgCoap.Rstate:
+			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rstate, value)
+			break
+		case cfgCoap.Rmotion:
+			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rmotion, value)
+			break
+		case cfgCoap.Rwhrate:
+			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rwhrate, value)
+			break
+		case cfgCoap.Rwbtemp:
+			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rwbtemp, value)
+			break
+		case cfgCoap.Rwdownward:
+			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rwdownward, value)
+			break
+		case cfgCoap.Rawake:
+			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rawake, value)
+			break
+		case cfgCoap.Rlamp:
+			sendToUI(cfgCoap.nodeLamp, cfgCoap.Rlamp, value)
 			break
 		default:
 			console.error('Err: Bad url.\r\n')
@@ -110,28 +136,15 @@ function deltaFromUI(thingName, stateObject)
 		console.log('GW: Send state changed to Node.')
 		var url, UIChanged = false
 
-		// remap Object Id to coap url
-		if (endpoint == cfgCoap.nodeFrontdoor) {
+		// remap LwM2M Object Id to coap url
+		if (endpoint == cfgCoap.nodeLamp) {
 			switch (oId) {
-			case cfgObjectId.oIdLight:
-				url = cfgCoap.lockSta
-				coap.sendToNode(frontdoorAddr, nodePort, url, newValue)
+			case cfgObjectId.oIdRlamp:
+				url = cfgCoap.Rlamp
+				coap.sendToNode(lnAddr, nodePort, url, newValue)
 
-				//update all app UI
-				sendToUI(cfgCoap.nodeFrontdoor, url, newValue)
-				break
-			default:
-				console.error('Err: Bad Object oId')
-				return
-			}
-		} else if (endpoint == cfgCoap.nodeLivingroom) {
-			switch (oId) {
-			case cfgObjectId.oIdLight:
-				url = cfgCoap.lightSta
-				coap.sendToNode(livingroomAddr, nodePort, url, newValue)
-
-				//update all app UI
-				sendToUI(cfgCoap.nodeLivingroom, url, newValue)
+				// update all app UI
+				sendToUI(cfgCoap.nodeLamp, url, newValue)
 				break
 			default:
 				console.error('Err: Bad Object oId')
@@ -151,18 +164,18 @@ function WSMessageHandle(message)
 		var msg = message.utf8Data
 		console.log('\n\nGW: Received package: ' + msg)
 
-		//get package "{}" means the UI is start running, need to get all state - stateNew
+		// get package "{}" means the UI is start running, need to get all state - stateNew
 		if (msg == '{}') {
-			wsServer.send(stateNew)          //send stateNew to UI
-			state = utils.deepCopy(stateNew) //update state
+			wsServer.send(stateNew)          // send stateNew to UI
+			state = utils.deepCopy(stateNew) // update state
 			console.log('GW: UI is start running.')
 		} else {
 			var stateNew = JSON.parse(msg)
 			for (var key in stateNew) {
-				//get package "desired" means the UI has changed
+				// get package "desired" means the UI has changed
 				if (key == 'desired') {
 					console.log('GW: UI status changed.')
-					//deal with the delta message from UI
+					// deal with the delta message from UI
 					deltaFromUI(null, {state: stateNew[key]})
 				} else {
 					console.error("GW: Can't recieved reported.")
@@ -180,18 +193,52 @@ function sendToUI(nodeName, url, val)
 	var endpoint = nodeName
 	var oId, iId, rId
 
-	// remap coap url to Object Id
+	// remap coap url to LwM2M Object Id
 	switch(url){
-	case cfgCoap.lockSta:
-	case cfgCoap.lightSta:
-		oId = cfgObjectId.oIdLight
+	case cfgCoap.Rbtemp:
+		oId = cfgObjectId.oIdRbtemp
 		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdLight
+		rId = cfgObjectId.rIdRbtemp
 		break
-	case cfgCoap.temp:
-		oId = cfgObjectId.oIdTemp
+	case cfgCoap.Rhrate:
+		oId = cfgObjectId.oIdRhrate
 		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdTemp
+		rId = cfgObjectId.rIdRbtemp
+		break
+	case cfgCoap.Rstate:
+		oId = cfgObjectId.oIdRstate
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRstate
+		break
+	case cfgCoap.Rmotion:
+		oId = cfgObjectId.oIdRmotion
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRmotion
+		break
+	case cfgCoap.Rwhrate:
+		oId = cfgObjectId.oIdRwhrate
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRwhrate
+		break
+	case cfgCoap.Rwbtemp:
+		oId = cfgObjectId.oIdRwbtemp
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRwbtemp
+		break
+	case cfgCoap.Rwdownward:
+		oId = cfgObjectId.oIdRwdownward
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRwdownward
+		break
+	case cfgCoap.Rawake:
+		oId = cfgObjectId.oIdRawake
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRawake
+		break
+	case cfgCoap.Rlamp:
+		oId = cfgObjectId.oIdRlamp
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRlamp
 		break
 	default:
 		console.error('Err: Bad url')
@@ -206,9 +253,9 @@ function sendToUI(nodeName, url, val)
 		val = false
 	} else {
 		val = parseInt(val)
-		if (url == cfgCoap.temp) {
-			//temperature format: 293
-			//transfer it to 29.3'C
+		if (url == cfgCoap.Rbtemp) {
+			//temperature format: 370
+			//transfer it to 37.0'C
 			val = val/10.0
 		}
 	}
@@ -250,13 +297,13 @@ function cmdSendToNode(commands)
 	var val = commands[2]
 
 	switch (nodeName) {
-	case 'f':
-		nodeName = cfgCoap.nodeFrontdoor
-		nodeAddr = frontdoorAddr
+	case 'wn':
+		nodeName = cfgCoap.nodeWearable
+		nodeAddr = wnAddr
 		break
-	case 'l':
-		nodeName = cfgCoap.nodeLivingroom
-		nodeAddr = livingroomAddr
+	case 'ln':
+		nodeName = cfgCoap.nodeLamp
+		nodeAddr = lnAddr
 		break
 	default:
 		console.log('Err: Bad nodeName.')
@@ -269,36 +316,46 @@ function cmdSendToNode(commands)
 
 function cmdResetNodes(commands)
 {
-	coap.sendToNode(frontdoorAddr, nodePort, cfgCoap.lockSta, cfgCoap.valOff)
-	sendToUI(cfgCoap.nodeFrontdoor, cfgCoap.lockSta, cfgCoap.valOff)
+	coap.sendToNode(wnAddr, nodePort, cfgCoap.lockSta, cfgCoap.valOff)
+	sendToUI(cfgCoap.nodeWearable, cfgCoap.lockSta, cfgCoap.valOff)
 
-	coap.sendToNode(livingroomAddr, nodePort, cfgCoap.lightSta, cfgCoap.valOff)
-	sendToUI(cfgCoap.nodeLivingroom, cfgCoap.lightSta, cfgCoap.valOff)
+	coap.sendToNode(lnAddr, nodePort, cfgCoap.lightSta, cfgCoap.valOff)
+	sendToUI(cfgCoap.nodeLamp, cfgCoap.lightSta, cfgCoap.valOff)
+}
+
+function cmdExit(commands)
+{
+	process.exit();
 }
 
 const commands = {
-	'show': {
+	'l': { //list
 		parameters: [],
 		description: '\tList all the resource in state and stateNew.',
 		handler: cmdShowState
 	},
-	'send': {
-		// send f lock_sta 0/1
-		// send l light_sta 0/1
+	's': { // send
+		// s wn btemp 380
+		// s ln lamp  0/1
 		parameters: ['nodeName', 'url', 'value'],
 		description: '\tSend CoAP PUT message to Node',
 		handler: cmdSendToNode
 	},
-	'reset': {
+	'r': { // reset
 		parameters: [],
 		description: '\tSend CoAP PUT message to reset frontdoor and livingroom',
 		handler: cmdResetNodes
+	},
+	'q': { // exit
+		parameters: [],
+		description: '\tExit',
+		handler: cmdExit
 	}
 }
 /******************** Commands **************************/
 
 /********************   Main   **************************/
-console.log('OT Gateway starting:')
+console.log('iBaby-Robot Gateway starting:')
 
 stateInit()
 coap.serverStart(coapMessageHandle)

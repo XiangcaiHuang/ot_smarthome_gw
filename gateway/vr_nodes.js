@@ -33,13 +33,9 @@ function coapServerStart()
 			console.log(url + ': ' + payload)
 
 			switch(url){
-			case config.lockSta:
-				// set lock status
-				console.log('Nodes: Set lock status.\r\n')
-				break
-			case config.lightSta:
-				// set light status
-				console.log('Nodes: Set light status.\r\n')
+			case config.Rlamp:
+				// set lamp status
+				console.log('Nodes: Set lamp status.\r\n')
 				break
 			default:
 				console.error('Err: Bad url.\r\n')
@@ -79,22 +75,36 @@ function cmdSendToGW(commands)
 
 function cmdResetNodes(commands)
 {
-	sendToGW(config.localAddr, config.gwPort, config.lockSta, config.valOff)
-	
-	sendToGW(config.localAddr, config.gwPort, config.lightSta, config.valOff)
-	sendToGW(config.localAddr, config.gwPort, config.temp, config.valDefault)
+	sendToGW(config.localAddr, config.gwPort, config.Rbtemp,     "37")
+	sendToGW(config.localAddr, config.gwPort, config.Rhrate,     "0")
+	sendToGW(config.localAddr, config.gwPort, config.Rstate,     "0")
+	sendToGW(config.localAddr, config.gwPort, config.Rmotion,    "2000")
+	sendToGW(config.localAddr, config.gwPort, config.Rwhrate,    "false")
+	sendToGW(config.localAddr, config.gwPort, config.Rwbtemp,    "false")
+	sendToGW(config.localAddr, config.gwPort, config.Rwdownward, "false")
+	sendToGW(config.localAddr, config.gwPort, config.Rlamp,      "0")
+}
+
+function cmdExit(commands)
+{
+	process.exit();
 }
 
 const commands = {
-	's': { // like: s lock_sta 1
+	's': { // like: s btemp 380
 		parameters: ['url', 'value'],
 		description: '\tSend CoAP PUT message to Gateway',
 		handler: cmdSendToGW
 	},
 	'rst': {
 		parameters: [],
-		description: '\tSend CoAP PUT message to reset frontdoor and livingroom',
+		description: '\tSend CoAP PUT message to reset Nodes',
 		handler: cmdResetNodes
+	},
+	'q': {
+		parameters: [],
+		description: '\tExit',
+		handler: cmdExit
 	}
 }
 /******************** Commands **************************/

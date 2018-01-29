@@ -23,17 +23,23 @@ var config = {}
 
 config.coap = {
 	  gwAddr:         'fdde:ad00:beef:0:3b33:8a2f:8e4:67d3'  // Gateway's IPv6 address
-	, frontdoorAddr:  'fdde:ad00:beef:0:63a8:7376:c6ad:828c'  // Frontdoor's IPv6 address
-	, livingroomAddr: 'fdde:ad00:beef:0:4f6e:7e53:67c8:f5b0' // Livingroom's IPv6 address
+	, wnAddr:         'fdde:ad00:beef:0:63a8:7376:c6ad:828c' // Wearable node's IPv6 address
+	, lnAddr:         'fdde:ad00:beef:0:4f6e:7e53:67c8:f5b0' // Lamp node's IPv6 address
 	, localAddr:      '::1' // Localhost's IPv6 address
 	, defaultPort:    5683
 	, gwPort:         5683
 	, nodePort:       5684  // use different port like 5684 if you are trying virtual nodes (NodeJs: vr_nodes.js)
-	, nodeFrontdoor:  'frontdoor'
-	, nodeLivingroom: 'livingroom'
-	, lockSta:        'lock_sta'
-	, lightSta:       'light_sta'
-	, temp:           'temp'
+	, nodeWearable:   'wn'  // Name of wearable node
+	, nodeLamp:       'ln'  // Name of lamp node
+	, Rbtemp:         'btemp' // Resources of wearable node
+	, Rhrate:         'hrate'
+	, Rstate:         'state'
+	, Rmotion:        'motion'
+	, Rwhrate:        'whrate'
+	, Rwbtemp:        'wbtemp'
+	, Rwdownward:     'wdownward'
+	, Rawake:         'awake'
+	, Rlamp:          'lamp' // Resources of lamp node
 	, valOn:          '1'
 	, valOff:         '0'
 	, valDefault:     '0'
@@ -42,11 +48,25 @@ config.coap = {
 // Configuration of the Object Id
 //--------------------------------------------------
 config.ObjectId = {
-	  oIdLight: '3311'
-	, oIdTemp:  '3303'
-	, iId:      '0'
-	, rIdLight: '5850'
-	, rIdTemp:  '5700'
+	  oIdRbtemp:      '3303'
+	, oIdRhrate:      '3346'
+	, oIdRstate:      '3300'
+	, oIdRmotion:     '3323'
+	, oIdRwhrate:     '3338'
+	, oIdRwbtemp:     '3339'
+	, oIdRwdownward:  '3341'
+	, oIdRawake:      '3342'
+	, oIdRlamp:       '3311'
+	, iId:            '0'
+	, rIdRbtemp:      '5700'
+	, rIdRhrate:      '5700'
+	, rIdRstate:      '5700'
+	, rIdRmotion:     '5700'
+	, rIdRwhrate:     '5800'
+	, rIdRwbtemp:     '5800'
+	, rIdRwdownward:  '5800'
+	, rIdRawake:      '5800'
+	, rIdRlamp:       '5850'
 }
 
 // Configuration of the http server
