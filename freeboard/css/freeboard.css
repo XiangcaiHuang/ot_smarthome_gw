@@ -756,25 +756,27 @@ freeboard
 ============*/
 
 html {
-	background-color: #101214;
+	background-color: #FFFFFF;/*修改*/
 	height: 100%;
 	overflow: hidden;
 }
 
 body {
-	background-color: #101214;
-	color: #8b8b8b;
+	background-color:#EBEBEB;/*修改*/
+	/*background-image: url("../title2.jpg");
+	background-repeat:no-repeat;*/
+	color:#000000;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 14px;
-	line-height: 20px;
+	font-size: 10px;
+	line-height: 20px;/*行间距离*/
 	height: 100%;
-	overflow-x: hidden;
-	overflow-y: auto;
+	overflow-x: hidden;/*overflow-x 属性规定是否对内容的左/右边缘进行裁剪 - 如果溢出元素内容区域的话*/
+	overflow-y: auto;/*如果溢出框，则应该提供滚动机制*/
 }
 
-.modal {
+.modal {/*模态框（Modal）是覆盖在父窗体上的子窗体。通常，目的是显示来自一个单独的源的内容，可以在不离开父窗体的情况下有一些互动。子窗体可提供信息、交互等。*/
 	position: absolute;
-	background-color: #2a2a2a;
+	background-color: #99FFCC;
 	top: 120px;
 	width: 900px;
 	margin: auto;
@@ -789,7 +791,7 @@ body {
 }
 
 .modal header {
-	background-color: #272727;
+	background-color: #CCFF99;
 	height: 40px;
 	margin: 0;
 	padding: 0 10px 0 10px;
@@ -798,7 +800,7 @@ body {
 }
 
 .modal footer {
-	background-color: #272727;
+	background-color: #99FFCC;
 	height: 40px;
 	margin: 0;
 	color: #8b8b8b;
@@ -818,11 +820,11 @@ body {
 }
 
 .modal section {
-	padding: 25px;
-	padding-bottom: 55px;
+	padding: 25px;/*在一个声明中设置所有内边距属性*/
+	padding-bottom: 55px;/*设置元素的下外边距*/
 }
 
-.control-group:last-child {
+.control-group:last-child {/*对齐表单和标签*/
 	margin-bottom: 0px;
 }
 
@@ -841,7 +843,7 @@ body {
 	clear: both;
 }
 
-.control-label {
+.control-label {/*TYPE选择框标题属性*/
 	padding-top: 5px;
 	text-align: right;
 	text-transform: uppercase;
@@ -873,7 +875,7 @@ body {
 }
 
 select,
-textarea {
+textarea {/*进行多行输入*/
 	margin: 0;
 	font-size: 100%;
 	vertical-align: middle;
@@ -901,7 +903,7 @@ input[type="color"],
 	padding: 4px 6px;
 	font-size: 14px;
 	line-height: 20px;
-	color: #d3d4d4;
+	color:OliveDrab;/*修改选项字颜色*/
 	vertical-align: middle;
 	-webkit-border-radius: 0px;
 	-moz-border-radius: 0px;
@@ -939,8 +941,8 @@ input[type="search"],
 input[type="tel"],
 input[type="color"],
 .uneditable-input {
-	background-color: #272727;
-	border: 1px solid #3d3d3d;
+	background-color: #FFFFCC;/*输入框颜色*/
+	border: 1px solid #FFFFCC;
 	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
@@ -966,14 +968,14 @@ input[type="search"]:focus,
 input[type="tel"]:focus,
 input[type="color"]:focus,
 .uneditable-input:focus {
-	border-color: rgba(255, 153, 0, 0.8);
+	border-color: rgba(255, 153, 0, 0.8);/*选中框边框颜色*/
 	outline: 0;
 	outline: thin dotted    \9;
 	/* IE6-9 */
 
 	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgb(255, 153, 0);
 	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgb(255, 153, 0);
-	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgb(255, 153, 0);
+	box-shadow: inset 0 1px 1px rgba(255, 0, 0, 0.075), 0 0 8px #00FFFF);
 }
 
 select {
@@ -992,7 +994,7 @@ h6 {
 	font-family: inherit;
 	font-weight: bold;
 	line-height: 20px;
-	color: inherit;
+	color: #454545;/*磁铁文字颜色*/
 	text-rendering: optimizelegibility;
 }
 
@@ -1028,7 +1030,7 @@ h6 {
 
 table {
 	max-width: 100%;
-	background-color: transparent;
+	background-color: transparent;/*数据源列表颜色*/
 	border-collapse: collapse;
 	border-spacing: 0;
 }
@@ -1090,7 +1092,7 @@ a:focus {
 	left: 0px;
 	height: 100%;
 	width: 100%;
-	background: rgba(0, 0, 0, 0.8);
+	background: rgba(255, 255, 250, 0.8);/*ADD添加页面背景色*/
 	overflow-y: auto;
 }
 
@@ -1100,7 +1102,7 @@ a:active {
 }
 
 a {
-	color: #B88F51;
+	color: #B88F51;/*a链接*/
 	text-decoration: none;
 }
 
@@ -1110,12 +1112,12 @@ a:focus {
 	text-decoration: underline;
 }
 
-.gridster header {
-	background-color: #272727;
+.gridster header {/*磁盘*/
+	background-color: #FFFFFF;/*磁盘上方背景颜色*/
 	height: 30px;
 	margin: 0;
 	padding: 0 10px 0 10px;
-	color: #8b8b8b;
+	color: LightCoral;/*磁盘标题颜色*/
 	text-transform: uppercase;
 }
 
@@ -1130,6 +1132,7 @@ header h1 {
 }
 
 .gridster section {
+	background-color:#FFFFFF;/*磁盘中部*/
 	line-height: normal;
 	bottom: 0;
 	left: 0;
@@ -1154,31 +1157,31 @@ header h1 {
 }
 
 #admin-bar {
-	background-color: #313131;
+	background-color:GoldenRod;
 	width: 100%;
 	height: 200px;
 	position: relative;
 	-webkit-box-shadow: 0 0 5px #000;
-	box-shadow: 0 0 5px #000;
+	box-shadow: 0 0 15px #f55;/*设置栏边界阴影*/
 	overflow: hidden;
 }
 
-#toggle-header {
+#toggle-header {/*工具图标颜色*/
 	margin: 0 auto;
 	left: 0;
 	right: 0;
 	width: 50px;
-	background-color: #313131;
+	background-color: rgba(255,0,0,0.6);
 	text-align: center;
 	cursor: pointer;
 }
 
-#toggle-header-icon {
+#toggle-header-icon {/*导航栏*/
 	margin-top: 4px;
 	margin-bottom: 7px;
 }
 
-.widget {
+.widget {/*指示灯*/
 	padding: 5px 10px 5px 10px;
 	height: 100%;
 	width: 100%;
@@ -1214,7 +1217,7 @@ header h1 {
 .datasource-delete-btn {
 	padding: 5px;
 	margin-left: 5px;
-	cursor: pointer;
+	cursor: pointer;/*cursor规则是设定网页浏览时用户鼠标指针的样式*/
 }
 
 #board-tools {
@@ -1229,7 +1232,7 @@ header h1 {
 
 .table td {
 	border-top: solid 1px #3d3d3d;
-	color: #d3d4d4;
+	color: #FFFFFF;/*datasource 文字颜色*/
 }
 
 #datasources {
@@ -1240,7 +1243,7 @@ header h1 {
 
 #cam {
 	height: 100%;
-	background-size: cover;
+	background-size: cover;/*背景图像伸缩至整个页面*/
 }
 
 #admin-menu {
@@ -1257,9 +1260,10 @@ header h1 {
 	box-sizing: border-box;
 }
 
-.sub-section h2 {
+.sub-section h2 {/*磁盘中添加的local server connect属性*/
+	color:#668B8B;
 	font-size: 14px;
-	font-weight: normal;
+	font-weight: 700;
 	padding: 0px;
 	margin: 0px;
 	line-height: normal;
@@ -1267,7 +1271,7 @@ header h1 {
 
 .sub-section {
 	padding: 0;
-	border-bottom: solid 1px #363636;
+	border-bottom: solid 1px #ffffff;/*pan拼接处线条颜色*/
 	position: relative;
 	overflow: hidden;
 }
@@ -1370,8 +1374,9 @@ ul, ol {
 	top: 0;
 }
 
-.gridster .gs_w {
-	background: #2a2a2a;
+.gridster .gs_w {/*磁盘底部*/
+	background: #FFFFFF;
+  box-shadow:0 1px 0.5px 0.5px #999999;  
 	padding: 0px;
 	margin: 0px;
 	overflow: hidden;
@@ -1402,6 +1407,7 @@ ul, ol {
 	background-image: url("../img/glyphicons-halflings.png");
 	background-position: 14px 14px;
 	background-repeat: no-repeat;
+
 }
 
 /* White icons with optional class, or on hover/focus/active states of certain elements */
@@ -2039,7 +2045,7 @@ input.table-row-value {
 	max-height: 110px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	border-bottom: solid 1px #3d3d3d;
+	border-bottom: solid 1px #ffffff;
 }
 
 ul.value-dropdown {
@@ -2113,8 +2119,8 @@ ul.board-toolbar.vertical {
 	display: inline-block;
 }
 
-.board-toolbar li {
-	color: #B88F51;
+.board-toolbar li {/*load freeboard...字体颜色*/
+	color: #ffffff;
 	float: left;
 	cursor: pointer;
 	margin: 0px 0px 0px 5px;
@@ -2127,8 +2133,8 @@ ul.board-toolbar.vertical {
 	float: none;
 }
 
-.board-toolbar li:hover {
-	background-color: rgba(75, 75, 75, 1.0);
+.board-toolbar li:hover {/*鼠标指向load freeboard 背景颜色*/
+	/*background-color: rgba(255, 0, 0, 1.0);*/
 
 	-webkit-transition: 250ms linear;
 	-moz-transition: 250ms linear;
@@ -2151,8 +2157,8 @@ ul.board-toolbar.vertical {
 	margin-bottom: -10px;
 }
 
-.text-button {
-	color: #B88F51;
+.text-button {/*lan ADD颜色*/
+	color: #ffffff;
 	cursor: pointer;
 	text-transform: uppercase;
 }
@@ -2205,7 +2211,7 @@ a:hover.text-button, a:focus.text-button {
 	transform: translateX(0px);
 }
 
-.setting-description {
+.setting-description {/*插件中提示信息文字属性*/
 	font-size: 10px;
 	text-shadow: none;
 	color: #6F6F6F;
@@ -2243,7 +2249,7 @@ ul.datasource-input-suffix {
 	width: 414px;
 	height: 30px;
 	-webkit-appearance: none;
-	border: 1px solid #3d3d3d;
+	border: 1px solid #3d3d3d;/*type边框色*/
 	background: url(../img/dropdown-arrow.png) no-repeat right #272727;
 }
 
@@ -2252,11 +2258,11 @@ ul.datasource-input-suffix {
 	vertical-align: baseline;
 	-webkit-font-smoothing: antialiased;
 	font-style: normal;
-	color: #d3d4d4;
+	color: #d3d4d4;/*embARC datasource字体颜色*/
 }
 
 .title.bordered {
-	border: solid 3px #d3d4d4;
+	border: solid 3px #d3d4d4;/*embARC datasource方框颜色*/
 	display: inline-block;
 	padding: 2px 17px 2px 17px;
 	line-height: 39px;
@@ -2563,7 +2569,7 @@ h2.title {
 	}
 }
 
-input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {/*占为文本颜色*/
 	color: #636363;
 }
 
@@ -2638,8 +2644,8 @@ input:-moz-placeholder, textarea:-moz-placeholder {
 
 .onoffswitch-inner .on {
 	padding-left: 6px;
-	background-color: #2a2a2a;
-	color: #8B8B8B;
+	background-color: #2a2a2a;/*yes no 背景颜色*/
+	color: #8B8B8B;/*yes no 字体颜色*/
 }
 
 .onoffswitch-inner .off {
@@ -2671,7 +2677,7 @@ input:-moz-placeholder, textarea:-moz-placeholder {
 
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
 	right: 0px;
-	background-color: #FF9900;
+	background-color: #FF9900;/*yes no方块颜色*/
 }
 
 .code-window {
@@ -2681,7 +2687,7 @@ input:-moz-placeholder, textarea:-moz-placeholder {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: #2a2a2a;
+	background-color: #00FFFF;/*修改*/
 }
 
 .code-window-footer {

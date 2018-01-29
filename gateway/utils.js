@@ -7,6 +7,32 @@ LICENSE
  * \brief   function for OpenThread 
  	Application Gateway.
 --------------------------------------------- */
+// transfer string-int to bool
+function transferSI2B(val)
+{
+	var tmp
+	if (val == "0")
+	//value of Resource lamp: 0/1
+	//transfer it to false/ture
+		tmp = false
+	else
+		tmp = true
+	return tmp
+}
+
+// transfer string-int to string-bool
+function transferSI2SB(val)
+{
+	var tmp
+	if (val == "0")
+	//value of some Resources: 0/1
+	//transfer it to "false"/"ture"
+		tmp = "false"
+	else
+		tmp = "true"
+	return tmp
+}
+
 function deepCopy(input)
 {
 	var output = {}
@@ -59,5 +85,7 @@ function getDifferent(obj1, obj2)
 	return objDifferent
 }
 
-module.exports.deepCopy     = deepCopy
-module.exports.getDifferent = getDifferent
+module.exports.transferSI2B  = transferSI2B
+module.exports.transferSI2SB = transferSI2SB
+module.exports.deepCopy      = deepCopy
+module.exports.getDifferent  = getDifferent

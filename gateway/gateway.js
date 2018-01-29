@@ -34,19 +34,19 @@ function stateInit()
 {
 	stateNew = {
 		"wn":{
-			"3303":{"0":{"5700":"37"   }},// btemp
-			"3346":{"0":{"5700":"0"    }},// hrate
+			"3303":{"0":{"5700":0    }},// btemp
+			"3346":{"0":{"5700":0    }},// hrate
 
-			"3300":{"0":{"5700":"0"    }},// state
-			"3323":{"0":{"5700":"2000" }},// motion
+			"3300":{"0":{"5700":0    }},// state
+			"3323":{"0":{"5700":0    }},// motion
 
 			"3338":{"0":{"5800":"false"}},// whrate
 			"3339":{"0":{"5800":"false"}},// wbtemp
 			"3341":{"0":{"5800":"false"}},// wdownward
-			"3342":{"0":{"5800":"false"}} // awake
+			"3342":{"0":{"5800":"false"}},// awake
 		},
 		'ln':{
-			"3311":{"0":{"5850":"false"}} // lamp
+			"3311":{"0":{"5850":false}} // lamp
 		}
 	}
 }
@@ -199,66 +199,63 @@ function sendToUI(nodeName, url, val)
 		oId = cfgObjectId.oIdRbtemp
 		iId = cfgObjectId.iId
 		rId = cfgObjectId.rIdRbtemp
+		//temperature format: 370
+		//transfer it to 37.0'C
+		val = parseInt(val) / 10.0
 		break
 	case cfgCoap.Rhrate:
 		oId = cfgObjectId.oIdRhrate
 		iId = cfgObjectId.iId
 		rId = cfgObjectId.rIdRbtemp
+		val = parseInt(val)
 		break
 	case cfgCoap.Rstate:
 		oId = cfgObjectId.oIdRstate
 		iId = cfgObjectId.iId
 		rId = cfgObjectId.rIdRstate
+		val = parseInt(val)
 		break
 	case cfgCoap.Rmotion:
 		oId = cfgObjectId.oIdRmotion
 		iId = cfgObjectId.iId
 		rId = cfgObjectId.rIdRmotion
+		val = parseInt(val)
 		break
 	case cfgCoap.Rwhrate:
 		oId = cfgObjectId.oIdRwhrate
 		iId = cfgObjectId.iId
 		rId = cfgObjectId.rIdRwhrate
+		val = utils.transferSI2SB(val)
 		break
 	case cfgCoap.Rwbtemp:
 		oId = cfgObjectId.oIdRwbtemp
 		iId = cfgObjectId.iId
 		rId = cfgObjectId.rIdRwbtemp
+		val = utils.transferSI2SB(val)
 		break
 	case cfgCoap.Rwdownward:
 		oId = cfgObjectId.oIdRwdownward
 		iId = cfgObjectId.iId
 		rId = cfgObjectId.rIdRwdownward
+		val = utils.transferSI2SB(val)
 		break
 	case cfgCoap.Rawake:
 		oId = cfgObjectId.oIdRawake
 		iId = cfgObjectId.iId
 		rId = cfgObjectId.rIdRawake
+		val = utils.transferSI2SB(val)
 		break
 	case cfgCoap.Rlamp:
 		oId = cfgObjectId.oIdRlamp
 		iId = cfgObjectId.iId
 		rId = cfgObjectId.rIdRlamp
+		val = utils.transferSI2B(val)
 		break
 	default:
 		console.error('Err: Bad url')
 		return
 	}
 
-	if (val == cfgCoap.valOn) {
-		//value of lockSta and lightSta: 0/1
-		//transfer it to false/ture
-		val = true
-	} else if (val == cfgCoap.valOff) {
-		val = false
-	} else {
-		val = parseInt(val)
-		if (url == cfgCoap.Rbtemp) {
-			//temperature format: 370
-			//transfer it to 37.0'C
-			val = val/10.0
-		}
-	}
 	stateNew[endpoint][oId][iId][rId] = val
 
 	// var stateChange = utils.getDifferent(stateNew, state)

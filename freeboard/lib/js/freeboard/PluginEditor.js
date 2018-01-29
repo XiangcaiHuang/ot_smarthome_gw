@@ -2,25 +2,25 @@ PluginEditor = function(jsEditor, valueEditor)
 {
 	function _displayValidationError(settingName, errorMessage)
 	{
-		var errorElement = $('<div class="validation-error"></div>').html(errorMessage);
-		$("#setting-value-container-" + settingName).append(errorElement);
+		var errorElement = $('<div class="validation-error"></div>').html(errorMessage);//设置或返回所选元素的内容（包括 HTML 标记）
+		$("#setting-value-container-" + settingName).append(errorElement);// append() 方法在被选元素的结尾插入内容
 	}
 
 	function _removeSettingsRows()
 	{
-		if($("#setting-row-instance-name").length)
+		if($("#setting-row-instance-name").length)//id=setting...元素的长度
 		{
-			$("#setting-row-instance-name").nextAll().remove();
-		}
+			$("#setting-row-instance-name").nextAll().remove();// 获得匹配元素集合中每个元素的所有跟随的同胞元素，由选择器筛选是可选的
+		}//chaining在相同的元素上运行多条 jQuery 命令
 		else
 		{
-			$("#setting-row-plugin-types").nextAll().remove();
+			$("#setting-row-plugin-types").nextAll().remove();//水平遍历
 		}
 	}
 
 	function _isNumerical(n)
 	{
-		return !isNaN(parseFloat(n)) && isFinite(n);
+		return !isNaN(parseFloat(n)) && isFinite(n);//有限数字返回true
 	}
 
 	function _appendCalculatedSettingRow(valueCell, newSettings, settingDef, currentValue, includeRemove)
@@ -30,22 +30,22 @@ PluginEditor = function(jsEditor, valueEditor)
 		if(settingDef.multi_input) {
 			input.change(function() {
 				var arrayInput = [];
-				$(valueCell).find('textarea').each(function() {
+				$(valueCell).find('textarea').each(function() {//遍历textare的每一个元素
 					var thisVal = $(this).val();
 					if(thisVal) {
-						arrayInput = arrayInput.concat(thisVal);
+						arrayInput = arrayInput.concat(thisVal);//将thisVal加载ayyayInput
 					}
 				});
 				newSettings.settings[settingDef.name] = arrayInput;
 			});
 		} else {
 			input.change(function() {
-				newSettings.settings[settingDef.name] = $(this).val();
+				newSettings.settings[settingDef.name] = $(this).val();//单行输入当前值
 			});
 		}
 
 		if(currentValue) {
-			input.val(currentValue);
+			input.val(currentValue);//将<textarea></textarea>加入currentValue
 		}
 
 		valueEditor.createValueEditor(input);
@@ -63,10 +63,10 @@ PluginEditor = function(jsEditor, valueEditor)
 
 		var jsEditorTool = $('<li><i class="icon-fullscreen icon-white"></i><label>.JS EDITOR</label></li>')
 			.mousedown(function(e) {
-				e.preventDefault();
+				e.preventDefault();//阻止元素发生默认的行为
 				jsEditor.displayJSEditor(input.val(), function(result) {
 					input.val(result);
-					input.change();
+					input.change();//函数触发 change 事
 				});
 			});
 		datasourceToolbox.append(jsEditorTool);
@@ -78,7 +78,7 @@ PluginEditor = function(jsEditor, valueEditor)
 					wrapperDiv.remove();
 					$(valueCell).find('textarea:first').change();
 				});
-			datasourceToolbox.prepend(removeButton);
+			datasourceToolbox.prepend(removeButton);//移除键
 		}
 
 		$(valueCell).append(wrapperDiv);

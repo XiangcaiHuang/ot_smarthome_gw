@@ -8,9 +8,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="viewport" content = "width = device-width, initial-scale = 1, user-scalable = no" />
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-    <link href="css/freeboard.min.css" rel="stylesheet" />
+    <link href="css/freeboard.css" rel="stylesheet" />
     <script src="js/freeboard.thirdparty.min.js"></script>
     <script src="config/WAN.js"></script>
+    <script src="config/LAN.js"></script>
     <script type="text/javascript">
         head.js("js/freeboard_plugins.js",
                 // *** Load more plugins here ***
@@ -18,13 +19,22 @@
                 "plugins/thirdparty/aws.iot.plugin.js",
                 "plugins/thirdparty/websocket.plugin.js",
                 // Widgets Plugins
+				
                 "plugins/thirdparty/interactive_indicator.js",
+				"plugins/thirdparty/plugin_highcharts.js",
+				"plugins/thirdparty/temperature_warn.js",
+				"plugins/thirdparty/in.js",
+				"plugins/thirdparty/posture.js",
+				"plugins/thirdparty/cry.js",
+				"plugins/thirdparty/wake.js",
+				"plugins/thirdparty/double_y.js",
+				
                 function(){
                     $(function()
                     { //DOM Ready
                         freeboard.initialize(true);
                         //read config in LAN;
-                        freeboard.loadDashboard(WANConfig)
+                        freeboard.loadDashboard(LANConfig);
                         freeboard.setEditing(false);                   
 
 

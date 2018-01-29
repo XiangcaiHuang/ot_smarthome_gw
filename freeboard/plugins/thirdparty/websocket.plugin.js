@@ -171,81 +171,290 @@
 		}
 
 		function onMessageArrived(e) {
-			var key, endpoint, Oid, i, Rid,
-				msg = e.data,
+			var key, endpoint, Oid,Rid,i,m,
+				msg = e.data,temperature=0,heartrate=0,warn_h=0,warn_t=0,warn_s=0,warn_p=0,warn_sl=0,sleep_s=0,sleep_i=0,actuator=0,j=0,
 				homeStateNew = JSON.parse(msg).state;
 			for (endpoint in homeStateNew.reported) {
 				if (homeStateNew.reported[endpoint] === null) {
 					//delete UI
-				} else {
+					} 
+				else {
 					if (homeState.state.reported[endpoint] === undefined && panesLoaded[endpoint] === undefined) {
-						//add UI
-						var pane = {};
-						var widgets = [];
-						var widget = {};
-						pane.title = endpoint;
-						pane.width = 1;
-						pane.col_width = 1;
-						pane.row = {
-							"1": row[0][0] + row[0][1] - 5,
-							"2": row[0][col[0]],
-							"3": row[1][col[1]]
-						};
-						pane.col = {
-							"1": 1,
-							"2": col[0] + 1,
-							"3": col[1] + 1
-						};
-						widget.type = "indicator";
-						widget.settings = {
-							"title": "connected",
-							"value": '!(datasources["' + ["lan", "state", "reported", endpoint].join('"]["') + '"] == undefined)',
-							"on_text": "ONLINE",
-							"off_text": "OFFLINE"
-						};
-						row[0][col[0]] += 1;
-						row[1][col[1]] += 1;
-						widgets.push(widget);
-						widget = {};
-						for (Oid in homeStateNew.reported[endpoint]) {
-							for (i in homeStateNew.reported[endpoint][Oid]) {
-								if (Oid == "3303") {
-									//temp
-									widget.type = "sparkline";
-									widget.settings = {
-										"title": "temperature" + i,
-										"value": ['datasources["' + ["lan", "state", "reported", endpoint, Oid, i, "5700"].join('"]["') + '"]'],
-										"include_legend": true,
-										"legend": "C"
-									};
-									row[0][col[0]] += 6;
-									row[1][col[1]] += 6;
-								} else if (Oid == "3311") {
-									//light
-									widget.type = "interactive_indicator";
-									widget.settings = {
-										"title": "light" + i,
-										"value": 'datasources["' + ["lan", "state", "reported", endpoint, Oid, i, "5850"].join('"]["') + '"]',
-										"callback": 'datasources["' + ["lan", "state", "desired", endpoint, Oid, i, "5850"].join('"]["') + '"]',
-										"on_text": "ON",
-										"off_text": "OFF"
-									};
-								} else {
-									continue;
+							//add UI
+							temperature=0,heartrate=0,warn_h=0,warn_t=0,warn_p=0,warn_sl=0,sleep_s=0,sleep_i=0,actuator=0;
+							for (Oid in homeStateNew.reported[endpoint]) {
+								for (i in homeStateNew.reported[endpoint][Oid]) {
+									if (Oid == "3303") {temperature=temperature+1;}
+									if (Oid == "3346") {heartrate=heartrate+1;}
+									if (Oid == "3300") {sleep_s=sleep_s+1;}
+                                    					if (Oid == "3323") {sleep_i=sleep_i+1;}
+									if (Oid == "3338") {warn_h=warn_h+1;}
+									if (Oid == "3339") {warn_t=warn_t+1;}
+									if (Oid == "3341") {warn_p=warn_p+1;}
+									if (Oid == "3342") {warn_sl=warn_sl+1;}
+									
+									if (Oid == "3311") {actuator=actuator+1;}
 								}
-								row[0][col[0]] += 2;
-								row[1][col[1]] += 2;
+							}
+							if(j==0){
+								if(temperature!=0&&heartrate!=0){
+								var pane = {};
+								var widgets = [];
+								var widget = {};
+								var widget1= {};
+								pane.title = "体征 ||"+endpoint;
+								pane.width = 1;
+								pane.col_width = 1;//长度比例
+								pane.row = {
+									"1": row[0][0] + row[0][1] - 5,
+									"2": row[0][col[0]],
+									"3": row[1][col[1]]
+								};
+								pane.col = {
+									"1": 1,
+									"2": col[0] + 1,
+									"3": col[1] + 1
+								};
+									
+								for (Oid in homeStateNew.reported[endpoint]) {
+									for (i in homeStateNew.reported[endpoint][Oid]) {
+										if (Oid == "3303") {
+											//temp
+											widget.type = "highcharts-timeseries";
+											widget.settings = {
+												"timeframe":'120',
+												"blocks":'4',
+												"chartType":"spline",
+												"title": "",
+												"series1":['datasources["' + ["lan", "state", "reported", endpoint, "3303", "0", "5700"].join('"]["') + '"]'],											
+												"series1label": "体温",
+												"series2":['datasources["' + ["lan", "state", "reported", endpoint, "3346", "0", "5700"].join('"]["') + '"]'],											
+												"series2label": "心率"
+											
+											};
+											row[0][col[0]] += 6;
+									        row[1][col[1]] += 6;
+							
+										} 
+										
+										else {
+											continue;
+										}
+										row[0][col[0]] += 2;
+										row[1][col[1]] += 2;
+										widgets.push(widget);
+										widget = {};
+									}
+								}
+
+								pane.widgets = widgets;
+								freeboard.addPane(pane);
+								col[0] += 1;
+								col[0] %= 2;
+								col[1] += 1;
+								col[1] %= 3;
+								panesLoaded[endpoint] = true;
+							}
+							j=1;
+						}
+					//////////////////////////////
+						if(j==1){
+							if(actuator!=0){
+								var pane = {};
+								var widgets = [];
+								var widget = {};
+								var widget1= {};
+								pane.title = "控制栏||"+endpoint;
+								pane.width = 1;
+								pane.col_width = 1;
+								pane.row = {
+									"1": row[0][0] + row[0][1] - 5,
+									"2": row[0][col[0]],
+									"3": row[1][col[1]]
+								};
+								pane.col = {
+									"1": 1,
+									"2": col[0] + 1,
+									"3": col[1] + 1
+								};
+								for (Oid in homeStateNew.reported[endpoint]) {
+									for (i in homeStateNew.reported[endpoint][Oid]) {
+										if (Oid == "3311") {
+											widget.type = "interactive_indicator";
+											widget.settings = {
+												"title": "" ,
+												"value": 'datasources["' + ["lan", "state", "reported", endpoint, Oid, i, "5850"].join('"]["') + '"]',
+												"callback": 'datasources["' + ["lan", "state", "desired", endpoint, Oid, i, "5850"].join('"]["') + '"]',
+												"on_text":  "台灯 ON",
+												"off_text": "台灯 OFF"
+											};
+										} 
+										
+										else {
+											continue;
+										}
+										row[0][col[0]] += 2;
+										row[1][col[1]] += 2;
+										widgets.push(widget);
+										widget = {};
+									}
+								}
+								pane.widgets = widgets;
+								freeboard.addPane(pane);
+								col[0] += 1;
+								col[0] %= 2;
+								col[1] += 1;
+								col[1] %= 3;
+								panesLoaded[endpoint] = true;
+							}							
+							 j=2;						
+						}//////////////////////////
+					
+						if(j==2){
+							if(warn_h!=0&&warn_t!=0&&warn_p!=0&&warn_sl!=0){
+								var warn_d=new Array();
+								var pane = {};
+								var widgets = [];
+								var widget = {};
+								var widget1= {};
+								pane.title = "警报栏||"+endpoint;
+								pane.width = 1;
+								pane.col_width = 1;
+								pane.row = {
+									"1": row[0][0] + row[0][1] - 5,
+									"2": row[0][col[0]],
+									"3": row[1][col[1]]
+								};
+								pane.col = {
+									"1": 1,
+									"2": col[0] + 1,
+									"3": col[1] + 1
+								};
+								
+								for (Oid in homeStateNew.reported[endpoint]) {
+									for (i in homeStateNew.reported[endpoint][Oid]) {
+										if (Oid == "3338") {
+					                                    		widget.type="indicator1";
+				                                			widget.settings = {
+												"title":'',
+												"value": 'datasources["' + ["lan", "state", "reported", endpoint, "3338", "0", "5800"].join('"]["') + '"]',
+												"on_text":"异常",
+												"off_text":"正常",
+												"data":'datasources["' + ["lan", "state", "reported", endpoint, "3346", "0", "5700"].join('"]["') + '"]'
+											};
+										}
+										else {
+											continue;
+										}
+										row[0][col[0]] += 2;
+										row[1][col[1]] += 2;
+										widgets.push(widget);
+										widget = {};
+										
+									}
+								}
+
+								widget.type="temperature";
+			                        		widget.settings = {
+											"title": '',
+											"value":'datasources["' + ["lan", "state", "reported", endpoint, "3339", "0", "5800"].join('"]["') + '"]',
+											"on_text":"异常",
+											"off_text":"正常",
+											"data":'datasources["' + ["lan", "state", "reported", endpoint, "3303", "0", "5700"].join('"]["') + '"]'
+								};
+					                        widgets.push(widget);
+							   	widget = {};        	
+		                    		
+					                    	widget.type="posture";
+				            			widget.settings = {
+									"title": '',
+									"value":'datasources["' + ["lan", "state", "reported", endpoint, "3341", "0", "5800"].join('"]["') + '"]',
+									"on_text":"请调整宝宝睡姿",
+									"off_text":"正常"
+								};
 								widgets.push(widget);
 								widget = {};
+
+							    	widget.type="wake";
+		            					widget.settings = {
+								"title": '',
+								"value":'datasources["' + ["lan", "state", "reported", endpoint, "3342", "0", "5800"].join('"]["') + '"]',
+								"on_text":"宝宝睡醒了",
+								"off_text":"宝宝在睡觉"
+								};
+								widgets.push(widget);
+								widget = {};
+
+								pane.widgets = widgets;
+								freeboard.addPane(pane);
+								col[0] += 1;
+								col[0] %= 2;
+								col[1] += 1;
+								col[1] %= 3;
+								panesLoaded[endpoint] = true;	
 							}
+                            				j=3;	
 						}
-						pane.widgets = widgets;
-						freeboard.addPane(pane);
-						col[0] += 1;
-						col[0] %= 2;
-						col[1] += 1;
-						col[1] %= 3;
-						panesLoaded[endpoint] = true;
+
+						if(j==3)
+						{
+							if(sleep_s!=0){
+								var pane = {};
+								var widgets = [];
+								var widget = {};
+								var widget1= {};
+								pane.title = "小睡眠||"+endpoint;
+								pane.width = 1;
+								pane.col_width = 1;
+								pane.row = {
+									"1": row[0][0] + row[0][1] - 5,
+									"2": row[0][col[0]],
+									"3": row[1][col[1]]
+								};
+								pane.col = {
+									"1": 1,
+									"2": col[0] + 1,
+									"3": col[1] + 1
+								};
+								for (Oid in homeStateNew.reported[endpoint]) {
+									for (i in homeStateNew.reported[endpoint][Oid]) {
+										if (Oid == "3300") {
+											widget.type = "double_y";
+										        widget.settings = {
+											"timeframe":'120',
+											"blocks":'4',
+											"chartType":"area",
+											"title": "",
+											"series1":['datasources["' + ["lan", "state", "reported", endpoint, "3300", "0", "5700"].join('"]["') + '"]'],											
+											"series1label": "活动状态",
+											"series2":['datasources["' + ["lan", "state", "reported", endpoint, "3323", "0", "5700"].join('"]["') + '"]'],											
+											"series2label": "活动强度"
+											};
+
+											row[0][col[0]] += 6;
+											row[1][col[1]] += 6;	
+										}
+										else {
+											continue;
+										}
+
+										row[0][col[0]] += 2;
+										row[1][col[1]] += 2;
+										widgets.push(widget);
+										widget = {};
+									}
+								}
+
+								pane.widgets = widgets;
+								freeboard.addPane(pane);
+								col[0] += 1;
+								col[0] %= 2;
+								col[1] += 1;
+								col[1] %= 3;
+								panesLoaded[endpoint] = true;
+							}							
+							j=0;	
+						}
 					}
 				}
 			}

@@ -7,7 +7,7 @@ DatasourceModel = function(theFreeboardModel, datasourcePlugins) {
 		{
 			if(_.isFunction(self.datasourceInstance.onDispose))
 			{
-				self.datasourceInstance.onDispose();
+				self.datasourceInstance.onDispose();//删除datasource
 			}
 
 			self.datasourceInstance = undefined;

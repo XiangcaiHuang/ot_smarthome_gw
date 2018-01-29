@@ -5,7 +5,7 @@ var LANConfig = {
 	"plugins": [],
 	"panes": [
 		{
-			"title": "EMSK SMARTHOME DEMO",
+			"title": "",
 			"width": 1,
 			"row": {
 				"1": 1,
@@ -20,18 +20,15 @@ var LANConfig = {
 			"col_width": "3",
 			"widgets": [
 				{
-					"type": "text_widget",
+					"type": "picture",
 					"settings": {
-						"size": "regular",
-						"value": "EMSK SMARTHOME",
-						"sparkline": false,
-						"animate": true
+                               "src":"../img/title.jpg"
 					}
 				}
 			]
 		},
 		{
-			"title": "CONNECTION STATUS",
+			"title": "连接状态",
 			"width": 1,
 			"row": {
 				"1": 5,
@@ -48,11 +45,11 @@ var LANConfig = {
 				{
 					"type": "interactive_indicator",
 					"settings": {
-						"title": "LOCAL SERVER CONNECTION STATUS",
+						"title": "本地连接",
 						"value": "datasources[\"lan\"][\"connected\"]",
 						"callback": "datasources[\"lan\"][\"connected\"]",
-						"on_text": "CONNECTED",
-						"off_text": "DISCONNECTED"
+						"on_text": "已连接",
+						"off_text": "未连接"
 					}
 				}
 			]
