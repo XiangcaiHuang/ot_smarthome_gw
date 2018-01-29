@@ -13,12 +13,12 @@
 	- [Interact using EMSK and UI](#interact-using-emsk-and-ui)
 
 ## Overview
-- `./gateway` folder: OpenThread Smarthome Application Gateway's source files.
-- `./freeboard` folder: Web UI's source files. Just fork from [freeboard][1] by zxytddd, exactly the same.
-- `./scripts` folder: Linux Shell scripts for intalling and running for gateway.
-	- `./install/ot_gw_install.sh`: for OpenThread Gateway installation.
-	- `./startup/ot_gw_startup.sh`: for OpenThread Gateway starting, including wpantund, wpanctl and Nodejs gateway.
-	- `./components_start/`
+- `gateway/` folder: OpenThread Smarthome Application Gateway's source files.
+- `freeboard/` folder: Web UI's source files. Just fork from [freeboard][1] by zxytddd, exactly the same.
+- `scripts/` folder: Linux Shell scripts for intalling and running for gateway.
+	- `ot_gw_install.sh`: for OpenThread Gateway installation.
+	- `.ot_gw_startup.sh`: for OpenThread Gateway starting, including wpantund, wpanctl and Nodejs gateway.
+	- `components_start/`
 		- `wpantund_start.sh`: only for wpantund starting.
 		- `wpanctl_start.sh`:  only for wpanctl starting and joining Thead network automatically.
 		- `gateway_start.sh`:  only for Nodejs gateway starting.
@@ -53,16 +53,13 @@ Before installing Gateway, it is recommanded to reinstall the operating system (
 #### Download Gateway
 
 	cd ~
-	git clone https://github.com/XiangcaiHuang/ot_smarthome_gw.git
+	git clone -b ibaby_robot https://github.com/XiangcaiHuang/ot_smarthome_gw.git
 
 #### Install and Run Gateway
 
-	cd ~/ot_smarthome_gw/gateway/
-	sudo npm install
-
-	cd ~/ot_smarthome_gw/scripts/install/
+	cd ~/ot_smarthome_gw/script/
 	sudo chmod +x ot_gw_install.sh
-	./ot_gw_install.sh
+	sudo ./ot_gw_install.sh
 
 The installation process takes about 1 ~ 2 hours for the first time, wait with patience please. And it will reboot after installation finished. After that, the Gateway (wpantund, wpanctl, Nodejs gateway) and NCP will run automatically after the power supplied to the Raspi (The NCP powered by Raspi via USB cable). It is due to the installation process modifys the `/etc/rc.local` which is a shell script always run after Linux starts.
 

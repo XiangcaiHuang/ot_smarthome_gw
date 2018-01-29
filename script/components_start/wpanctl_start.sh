@@ -16,8 +16,7 @@ print_help_info()
 
 wpanctl_start()
 {
-	sudo /usr/local/bin/wpanctl<<<
-	"
+	sudo /usr/local/bin/wpanctl<<<"
 	scan
 	set Network:Key --data 00112233445566778899aabbccddeeff
 	join 1
@@ -27,7 +26,8 @@ wpanctl_start()
 main()
 {
 	print_help_info
-	wpanctl_start
+	#wpanctl_start
+	sudo /usr/local/bin/wpanctl -I utun6
 
 	echo -e "\nwpanctl exit!"
 }
