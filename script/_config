@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# configurations
+HOME_PATH="/home/pi"
+BOOT_SYS_FILE="/etc/rc.local"
+# SOCKET_PATH="/dev/ttyUSB1"
+SOCKET_PATH="/dev/ttyACM0"
