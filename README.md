@@ -15,9 +15,9 @@
 ## Overview
 - `gateway/` folder: OpenThread Smarthome Application Gateway's source files.
 - `freeboard/` folder: Web UI's source files. Just fork from [freeboard][1] by zxytddd, exactly the same.
-- `scripts/` folder: Linux Shell scripts for intalling and running for gateway.
+- `script/` folder: Linux Shell scripts for intalling and running for gateway.
 	- `ot_gw_install.sh`: for OpenThread Gateway installation.
-	- `.ot_gw_startup.sh`: for OpenThread Gateway starting, including wpantund, wpanctl and Nodejs gateway.
+	- `ot_gw_startup.sh`: for OpenThread Gateway starting, including wpantund, wpanctl and Nodejs gateway.
 	- `components_start/`
 		- `wpantund_start.sh`: only for wpantund starting.
 		- `wpanctl_start.sh`:  only for wpanctl starting and joining Thead network automatically.
