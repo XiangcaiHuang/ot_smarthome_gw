@@ -11,8 +11,7 @@ wpantund_start()
 wpanctl_start()
 {
 	echo -e "\nwpanctl starting..."
-	sudo /usr/local/bin/wpanctl<<<
-	"
+	sudo /usr/local/bin/wpanctl<<<"
 	scan
 	set Network:Key --data 00112233445566778899aabbccddeeff
 	join 1

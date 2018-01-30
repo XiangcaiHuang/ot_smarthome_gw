@@ -4,6 +4,7 @@ print_help_info()
 {
 	echo -e "\nwpanctl starting..."
 	echo "Enter commands on the CLI, like:
+		reset
 		scan
 		set Network:Key --data 00112233445566778899aabbccddeeff
 		join 1
@@ -26,8 +27,8 @@ wpanctl_start()
 main()
 {
 	print_help_info
-	#wpanctl_start
-	sudo /usr/local/bin/wpanctl -I utun6
+	wpanctl_start
+	#sudo /usr/local/bin/wpanctl -I utun6
 
 	echo -e "\nwpanctl exit!"
 }
