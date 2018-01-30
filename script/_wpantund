@@ -1,0 +1,46 @@
+#!/bin/bash
+. ../_config
+
+wpantund_install()
+{
+	echo "python-software-properties installing..."
+	sudo apt-get install -y python-software-properties
+	sudo add-apt-repository -y ppa:terry.guo/gcc-arm-embedded
+	sudo apt-get update -qq
+
+	echo "packages needed for wpantund build and runtime installing..."
+	sudo apt-get install -y build-essential git make autoconf autoconf-archive automake dbus libtool gcc g++ gperf flex bison texinfo ncurses-dev libexpat-dev python sed python-pip gawk libreadline6-dev libreadline6 libdbus-1-dev libboost-dev
+	sudo apt-get install -y --force-yes gcc-arm-none-eabi
+	sudo pip install pexpect
+
+	echo -e "\nwpantund downloading..."
+	cd $HOME_PATH
+	if [ ! -d "$HOME_PATH/wpantund/" ];then
+		sudo git clone --recursive https://github.com/openthread/wpantund.git
+	else
+		echo "wpantund downloaded!"
+	fi
+
+	echo "wpantund installing..."
+	cd $HOME_PATH/wpantund
+	sudo git checkout full/latest-release
+	sudo ./configure --sysconfdir=/etc
+	sudo make
+	sudo make install
+
+	echo "wpantund installed! The version is: "
+	wpantund -v
+	wpanctl -v
+}
+
+wpantund_start_forward()
+{
+	# running in the forward
+	sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "${SOCKET_PATH}" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName utun6
+}
+
+wpantund_start_background()
+{
+	# running in the background
+	sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "${SOCKET_PATH}" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName utun6 &
+}

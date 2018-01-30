@@ -1,42 +1,25 @@
 #!/bin/bash
 . ./_config
-
-wpantund_start()
-{
-	echo -e "\nwpantund starting..."
-	sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "${SOCKET_PATH}" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName utun6 &
-	echo "wpantund started!"
-}
-
-wpanctl_start()
-{
-	echo -e "\nwpanctl starting..."
-	sudo /usr/local/bin/wpanctl<<<"
-	scan
-	set Network:Key --data 00112233445566778899aabbccddeeff
-	join 1
-	" -I utun6
-	echo "wpanctl exited!"
-}
-
-gateway_start()
-{
-	echo -e "\ngateway starting..."
-	cd ${HOME_PATH}/ot_smarthome_gw/gateway
-	sudo node ./gateway.js &
-	echo "gateway started!"
-}
+. ./_gateway
+. ./_wpantund
+. ./_wpanctl
 
 main()
 {
 	echo -e "\nOpenThread Smarthome Gateway Starting..."
 
-	wpantund_start
-	sleep 5s
-	wpanctl_start
-	sleep 5s
-	gateway_start
-	sleep 5s
+	# start wpantund as a deamon
+	wpantund_start_background
+	sleep 3s
+
+	# start wpanctl to join the Thread network
+	wpanctl_start_emsk
+	# wpanctl_start_k64_nrf52840
+	sleep 3s
+
+	# start openthread gateway
+	gateway_start_background
+	sleep 3s
 
 	echo -e "\nOpenThread Smarthome Gateway Started!"
 }

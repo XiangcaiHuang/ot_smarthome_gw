@@ -1,7 +1,11 @@
 #!/bin/bash
+# global configurations
 
-# configurations
 HOME_PATH="/home/pi"
 BOOT_SYS_FILE="/etc/rc.local"
-# SOCKET_PATH="/dev/ttyUSB1"
-SOCKET_PATH="/dev/ttyACM0"
+
+# for EMSK borad
+SOCKET_PATH="/dev/ttyUSB1"
+
+# for K64/NRF52840 board
+# SOCKET_PATH="/dev/ttyACM0"

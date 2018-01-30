@@ -1,0 +1,25 @@
+#!/bin/bash
+
+wpanctl_start_emsk()
+{
+	sudo /usr/local/bin/wpanctl<<<"
+	scan
+	set Network:Key --data 00112233445566778899aabbccddeeff
+	join 1
+	" -I utun6
+}
+
+wpanctl_start_k64_nrf52840()
+{
+	sudo /usr/local/bin/wpanctl<<<"
+	reset
+	scan
+	set Network:Key --data 00112233445566778899aabbccddeeff
+	join 1
+	" -I utun6
+}
+
+wpanctl_start_ctl()
+{
+	sudo /usr/local/bin/wpanctl -I utun6
+}

@@ -1,0 +1,69 @@
+#!/bin/bash
+. ../_config
+
+nodejs_install()
+{
+	echo -e "\nNodejs installing..."
+	cd $HOME_PATH
+	if [ ! -d "/usr/local/node/" ];then
+		test -d "node-v7.10.1-linux-armv7l" || {
+			test -f "node-v7.10.1-linux-armv7l.tar.gz" || {
+				echo -e "\nNodejs downloading..."
+
+				# Download nodejs installing files
+				wget https://nodejs.org/dist/latest-v7.x/node-v7.10.1-linux-armv7l.tar.gz
+			}
+			# Unzip files
+			tar -xvf node-v7.10.1-linux-armv7l.tar.gz
+		}
+		# Move unzip-files to /usr/local
+		sudo mv node-v7.10.1-linux-armv7l /usr/local/node
+
+		# Crete soft link for nodejs
+		echo PATH=$PATH:/usr/local/node/bin >> ~/.bashrc
+		source .bashrc
+		sudo ln -s /usr/local/node/bin/node /usr/bin/node
+		sudo ln -s /usr/local/node/bin/npm /usr/bin/npm
+
+		echo "Nodejs installed! The vesion is: "
+		node -v
+		npm -v
+	else
+		echo "node installed!"
+	fi
+}
+
+gateway_packs_install()
+{
+	cd $HOME_PATH/ot_smarthome_gw/gateway
+	test -d node_modules || {
+		sudo npm install
+	}
+}
+
+gateway_env_setup()
+{
+	echo -e "\nEnvironments setup starting..."
+
+	sudo chmod -R 777  $HOME_PATH/ot_smarthome_gw/scripts
+	sudo chmod 777 ${BOOT_SYS_FILE}
+
+	# Delete the line which includes "ot_gw_startup" from the boot file
+	sudo sed -i "/ot_gw_startup/d" ${BOOT_SYS_FILE}
+	# Insert one line into the boot file
+	sudo sed -i "/fi/a $HOME_PATH/ot_smarthome_gw/scripts/ot_gw_startup.sh >> $HOME_PATH/ot_smarthome_gw/boot_info"  ${BOOT_SYS_FILE}
+
+	echo "Environments setuped!"
+}
+
+gateway_start_forward()
+{
+	cd ${HOME_PATH}/ot_smarthome_gw/gateway
+	sudo node ./gateway.js
+}
+
+gateway_start_background()
+{
+	cd ${HOME_PATH}/ot_smarthome_gw/gateway
+	sudo node ./gateway.js &
+}
