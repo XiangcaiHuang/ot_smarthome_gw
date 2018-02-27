@@ -1,25 +1,39 @@
 #!/bin/bash
-
-wpanctl_start_emsk()
-{
-	sudo /usr/local/bin/wpanctl<<<"
-	scan
-	set Network:Key --data 00112233445566778899aabbccddeeff
-	join 1
-	" -I utun6
-}
-
-wpanctl_start_k64_nrf52840()
-{
-	sudo /usr/local/bin/wpanctl<<<"
-	reset
-	scan
-	set Network:Key --data 00112233445566778899aabbccddeeff
-	join 1
-	" -I utun6
-}
+. ../_config
 
 wpanctl_start_ctl()
 {
-	sudo /usr/local/bin/wpanctl -I utun6
+	sudo wpanctl -I $THREAD_INTERFACE_NAME
+}
+
+wpanctl_start_emsk_join_network()
+{
+	sudo wpanctl -I $THREAD_INTERFACE_NAME scan
+	sudo wpanctl -I $THREAD_INTERFACE_NAME set Network:Key --data $THREAD_NETWORK_KEY
+	sudo wpanctl -I $THREAD_INTERFACE_NAME join 1
+
+	sleep 3
+	sudo wpanctl -I $THREAD_INTERFACE_NAME status
+}
+
+wpanctl_start_k64_nrf52840_join_network()
+{
+	sudo wpanctl -I $THREAD_INTERFACE_NAME reset
+	sudo wpanctl -I $THREAD_INTERFACE_NAME scan
+	sudo wpanctl -I $THREAD_INTERFACE_NAME set Network:Key --data $THREAD_NETWORK_KEY
+	sudo wpanctl -I $THREAD_INTERFACE_NAME join 1
+
+	sleep 3
+	sudo wpanctl -I $THREAD_INTERFACE_NAME status
+}
+
+wpanctl_start_create_or_join_network()
+{
+	sudo wpanctl -I $THREAD_INTERFACE_NAME set Network:Key --data $THREAD_NETWORK_KEY
+	sudo wpanctl -I $THREAD_INTERFACE_NAME set NCP:Channel $THREAD_CHANNEL
+	sudo wpanctl -I $THREAD_INTERFACE_NAME setprop Network:PANID $THREAD_PANID
+	sudo wpanctl -I $THREAD_INTERFACE_NAME attach
+
+	sleep 3
+	sudo wpanctl -I $THREAD_INTERFACE_NAME status
 }

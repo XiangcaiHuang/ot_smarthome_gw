@@ -13,9 +13,9 @@ main()
 	sleep 3s
 
 	# start wpanctl to join the Thread network
-	wpanctl_start_emsk
-	# wpanctl_start_k64_nrf52840
-	sleep 3s
+	# wpanctl_start_emsk_join_network
+	# wpanctl_start_k64_nrf52840_join_network
+	wpanctl_start_create_or_join_network
 
 	# start openthread gateway
 	gateway_start_background
