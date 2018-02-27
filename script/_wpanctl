@@ -1,5 +1,5 @@
 #!/bin/bash
-. ../_config
+. ./_config
 
 wpanctl_start_ctl()
 {
@@ -34,6 +34,6 @@ wpanctl_start_create_or_join_network()
 	sudo wpanctl -I $THREAD_INTERFACE_NAME setprop Network:PANID $THREAD_PANID
 	sudo wpanctl -I $THREAD_INTERFACE_NAME attach
 
-	sleep 3
+	sleep 5
 	sudo wpanctl -I $THREAD_INTERFACE_NAME status
 }

@@ -19,9 +19,8 @@ main()
 
 	# start openthread gateway
 	gateway_start_background
-	sleep 3s
 
-	echo -e "\nOpenThread Smarthome Gateway Started!"
+	echo -e "\nOpenThread Smarthome Gateway stoped!"
 }
 
 main

@@ -1,5 +1,5 @@
 #!/bin/bash
-. ../_config
+. ./_config
 
 wpantund_install()
 {
@@ -35,12 +35,16 @@ wpantund_install()
 
 wpantund_start_forward()
 {
+	sudo killall wpantund
+
 	# running in the forward
-	sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "${SOCKET_PATH}" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName utun6
+	sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "${SOCKET_PATH}" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName $THREAD_INTERFACE_NAME
 }
 
 wpantund_start_background()
 {
+	sudo killall wpantund
+	
 	# running in the background
-	sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "${SOCKET_PATH}" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName utun6 &
+	sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "${SOCKET_PATH}" -o Daemon:SyslogMask " -info" -o Config:TUN:InterfaceName $THREAD_INTERFACE_NAME &
 }
