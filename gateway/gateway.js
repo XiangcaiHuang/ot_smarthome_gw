@@ -54,50 +54,85 @@ function stateInit()
 // receive PUT message from Thread Nodes
 function coapMessageHandle(req, res)
 {
-	var method  = req.method.toString()
-	var url     = req.url.split('/')[1].toString()
-	var value   = req.payload.toString()
+	var method = req.method.toString()
+	var nodeName = req.url.split('/')[1].toString()
+	var jsonPayload = req.payload.toString()
 
 	console.log('\nRequest received:')
 	console.log('\t method:  ' + method)
-	console.log('\t url:     ' + url)
-	console.log('\t payload: ' + value)
+	console.log('\t url:     ' + nodeName)
+	console.log('\t payload: ' + jsonPayload)
 
-	if (method === 'PUT') {
-		switch(url){
+	var obj= JSON.parse(jsonPayload)
+	for (var item in obj) {
+		val = obj[item].toString()
+		
+		switch(item.toString()){
 		case cfgCoap.Rbtemp:
-			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rbtemp, value)
+			oId = cfgObjectId.oIdRbtemp
+			iId = cfgObjectId.iId
+			rId = cfgObjectId.rIdRbtemp
+			//temperature format: 370
+			//transfer it to 37.0'C
+			val = parseInt(val) / 10.0
 			break
 		case cfgCoap.Rhrate:
-			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rhrate, value)
+			oId = cfgObjectId.oIdRhrate
+			iId = cfgObjectId.iId
+			rId = cfgObjectId.rIdRbtemp
+			val = parseInt(val)
 			break
 		case cfgCoap.Rstate:
-			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rstate, value)
+			oId = cfgObjectId.oIdRstate
+			iId = cfgObjectId.iId
+			rId = cfgObjectId.rIdRstate
+			val = parseInt(val)
 			break
 		case cfgCoap.Rmotion:
-			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rmotion, value)
+			oId = cfgObjectId.oIdRmotion
+			iId = cfgObjectId.iId
+			rId = cfgObjectId.rIdRmotion
+			val = parseInt(val)
 			break
 		case cfgCoap.Rwhrate:
-			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rwhrate, value)
+			oId = cfgObjectId.oIdRwhrate
+			iId = cfgObjectId.iId
+			rId = cfgObjectId.rIdRwhrate
+			val = utils.transferSI2SB(val)
 			break
 		case cfgCoap.Rwbtemp:
-			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rwbtemp, value)
+			oId = cfgObjectId.oIdRwbtemp
+			iId = cfgObjectId.iId
+			rId = cfgObjectId.rIdRwbtemp
+			val = utils.transferSI2SB(val)
 			break
 		case cfgCoap.Rwdownward:
-			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rwdownward, value)
+			oId = cfgObjectId.oIdRwdownward
+			iId = cfgObjectId.iId
+			rId = cfgObjectId.rIdRwdownward
+			val = utils.transferSI2SB(val)
 			break
 		case cfgCoap.Rawake:
-			sendToUI(cfgCoap.nodeWearable, cfgCoap.Rawake, value)
+			oId = cfgObjectId.oIdRawake
+			iId = cfgObjectId.iId
+			rId = cfgObjectId.rIdRawake
+			val = utils.transferSI2SB(val)
 			break
 		case cfgCoap.Rlamp:
-			sendToUI(cfgCoap.nodeLamp, cfgCoap.Rlamp, value)
+			oId = cfgObjectId.oIdRlamp
+			iId = cfgObjectId.iId
+			rId = cfgObjectId.rIdRlamp
+			val = utils.transferSI2B(val)
 			break
 		default:
-			console.error('Err: Bad url.\r\n')
-			break
+			console.error('Err: Bad url')
+			return
 		}
+
+		stateNew[nodeName][oId][iId][rId] = val
 	}
-	res.end('GW: Received.') // send response to client
+
+	sendToUI(stateNew)
 }
 
 function deltaFromUI(thingName, stateObject)
@@ -188,85 +223,8 @@ function WSMessageHandle(message)
 }
 
 // send state changed to UI
-function sendToUI(nodeName, url, val)
+function sendToUI(stateNew)
 {
-	var endpoint = nodeName
-	var oId, iId, rId
-
-	// remap coap url to LwM2M Object Id
-	switch(url){
-	case cfgCoap.Rbtemp:
-		oId = cfgObjectId.oIdRbtemp
-		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdRbtemp
-		//temperature format: 370
-		//transfer it to 37.0'C
-		val = parseInt(val) / 10.0
-		break
-	case cfgCoap.Rhrate:
-		oId = cfgObjectId.oIdRhrate
-		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdRbtemp
-		val = parseInt(val)
-		break
-	case cfgCoap.Rstate:
-		oId = cfgObjectId.oIdRstate
-		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdRstate
-		val = parseInt(val)
-		break
-	case cfgCoap.Rmotion:
-		oId = cfgObjectId.oIdRmotion
-		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdRmotion
-		val = parseInt(val)
-		break
-	case cfgCoap.Rwhrate:
-		oId = cfgObjectId.oIdRwhrate
-		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdRwhrate
-		val = utils.transferSI2SB(val)
-		break
-	case cfgCoap.Rwbtemp:
-		oId = cfgObjectId.oIdRwbtemp
-		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdRwbtemp
-		val = utils.transferSI2SB(val)
-		break
-	case cfgCoap.Rwdownward:
-		oId = cfgObjectId.oIdRwdownward
-		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdRwdownward
-		val = utils.transferSI2SB(val)
-		break
-	case cfgCoap.Rawake:
-		oId = cfgObjectId.oIdRawake
-		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdRawake
-		val = utils.transferSI2SB(val)
-		break
-	case cfgCoap.Rlamp:
-		oId = cfgObjectId.oIdRlamp
-		iId = cfgObjectId.iId
-		rId = cfgObjectId.rIdRlamp
-		val = utils.transferSI2B(val)
-		break
-	default:
-		console.error('Err: Bad url')
-		return
-	}
-
-	stateNew[endpoint][oId][iId][rId] = val
-
-	// var stateChange = utils.getDifferent(stateNew, state)
-	// if (stateChange !== undefined) {
-	// 	console.log("GW: Send state changed to UI.")
-	// 	console.log("\tstate changed : " + JSON.stringify(stateChange))
-
-	// 	wsServer.send(stateChange)       //send to UI
-	// 	state = utils.deepCopy(stateNew) //update state
-	// }
-	
 	if (stateNew !== undefined) {
 		console.log("GW: Send state changed to UI.")
 		console.log("\tstate changed : " + JSON.stringify(stateNew))
