@@ -19,14 +19,14 @@ var   stateNew = require('./state').stateNew
     , state    = require('./state').state
 
 // for simulated nodes
-// var   wnAddr   = cfgCoap.wnAddr
-//     , lnAddr   = cfgCoap.lnAddr
-//     , nodePort = cfgCoap.defaultPort
+var   wnAddr   = cfgCoap.wnAddr
+    , lnAddr   = cfgCoap.lnAddr
+    , nodePort = cfgCoap.defaultPort
 
 // for virtual nodes (NodeJs)
-var   wnAddr   = cfgCoap.localAddr
-    , lnAddr   = cfgCoap.localAddr
-    , nodePort = cfgCoap.nodePort
+// var   wnAddr   = cfgCoap.localAddr
+//     , lnAddr   = cfgCoap.localAddr
+//     , nodePort = cfgCoap.nodePort
 
 
 // must initialize the stateNew or it happen error
@@ -132,7 +132,7 @@ function coapMessageHandle(req, res)
 		stateNew[nodeName][oId][iId][rId] = val
 	}
 
-	sendToUI(stateNew)
+	sendStateToUI(stateNew)
 }
 
 function deltaFromUI(thingName, stateObject)
@@ -223,8 +223,87 @@ function WSMessageHandle(message)
 }
 
 // send state changed to UI
-function sendToUI(stateNew)
+function sendStateToUI(stateNew)
 {
+	if (stateNew !== undefined) {
+		console.log("GW: Send state changed to UI.")
+		console.log("\tstate changed : " + JSON.stringify(stateNew))
+
+		wsServer.send(stateNew)          //send to UI
+		state = utils.deepCopy(stateNew) //update state
+	}
+}
+
+function sendToUI(nodeName, url, val)
+{
+	var endpoint = nodeName
+	var oId, iId, rId
+
+	// remap coap url to LwM2M Object Id
+	switch(url){
+	case cfgCoap.Rbtemp:
+		oId = cfgObjectId.oIdRbtemp
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRbtemp
+		//temperature format: 370
+		//transfer it to 37.0'C
+		val = parseInt(val) / 10.0
+		break
+	case cfgCoap.Rhrate:
+		oId = cfgObjectId.oIdRhrate
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRbtemp
+		val = parseInt(val)
+		break
+	case cfgCoap.Rstate:
+		oId = cfgObjectId.oIdRstate
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRstate
+		val = parseInt(val)
+		break
+	case cfgCoap.Rmotion:
+		oId = cfgObjectId.oIdRmotion
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRmotion
+		val = parseInt(val)
+		break
+	case cfgCoap.Rwhrate:
+		oId = cfgObjectId.oIdRwhrate
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRwhrate
+		val = utils.transferSI2SB(val)
+		break
+	case cfgCoap.Rwbtemp:
+		oId = cfgObjectId.oIdRwbtemp
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRwbtemp
+		val = utils.transferSI2SB(val)
+		break
+	case cfgCoap.Rwdownward:
+		oId = cfgObjectId.oIdRwdownward
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRwdownward
+		val = utils.transferSI2SB(val)
+		break
+	case cfgCoap.Rawake:
+		oId = cfgObjectId.oIdRawake
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRawake
+		val = utils.transferSI2SB(val)
+		break
+	case cfgCoap.Rlamp:
+		oId = cfgObjectId.oIdRlamp
+		iId = cfgObjectId.iId
+		rId = cfgObjectId.rIdRlamp
+		val = utils.transferSI2B(val)
+		break
+	default:
+		console.error('Err: Bad url')
+		return
+	}
+
+	stateNew[endpoint][oId][iId][rId] = val
+	
 	if (stateNew !== undefined) {
 		console.log("GW: Send state changed to UI.")
 		console.log("\tstate changed : " + JSON.stringify(stateNew))
