@@ -45,25 +45,29 @@ gateway_env_setup()
 {
 	echo -e "\nEnvironments setup starting..."
 
+	sudo apt-get install lsof
+
 	sudo chmod -R 777  $HOME_PATH/ot_smarthome_gw/scripts
 	sudo chmod 777 ${BOOT_SYS_FILE}
 
 	# Delete the line which includes "ot_gw_startup" from the boot file
 	sudo sed -i "/ot_gw_startup/d" ${BOOT_SYS_FILE}
 	# Insert one line into the boot file
-	sudo sed -i "/fi/a $HOME_PATH/ot_smarthome_gw/scripts/ot_gw_startup.sh >> $HOME_PATH/ot_smarthome_gw/boot_info"  ${BOOT_SYS_FILE}
+	sudo sed -i "/fi/a $HOME_PATH/ot_smarthome_gw/script/ot_gw_startup.sh >> $HOME_PATH/ot_smarthome_gw/boot_info"  ${BOOT_SYS_FILE}
 
 	echo "Environments setuped!"
 }
 
 gateway_start_forward()
 {
+	sudo kill -9 $(lsof -i :8080 | awk '{print $2}' | tail -n 2)
 	cd ${HOME_PATH}/ot_smarthome_gw/gateway
 	sudo node ./gateway.js
 }
 
 gateway_start_background()
 {
+	sudo kill -9 $(lsof -i :8080 | awk '{print $2}' | tail -n 2)
 	cd ${HOME_PATH}/ot_smarthome_gw/gateway
 	sudo node ./gateway.js &
 }

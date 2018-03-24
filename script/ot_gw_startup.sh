@@ -18,7 +18,8 @@ main()
 	wpanctl_start_create_or_join_network
 
 	# start openthread gateway
-	gateway_start_background
+	gateway_start_forward
+	# gateway_start_background
 
 	echo -e "\nOpenThread Smarthome Gateway stoped!"
 }
