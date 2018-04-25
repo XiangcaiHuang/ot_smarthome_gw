@@ -27,7 +27,13 @@ function tcpClientStart()
 	clientSocket.on('data', function(data) {
 		console.log('\nGateway: ' + data);
 
-		var obj= JSON.parse(data)
+		try {
+			var obj= JSON.parse(data)
+		} catch (err) {
+			console.log('\nApp: Not JSON payload')
+			return
+		}
+		
 		for (var item in obj) {
 			var key = item.toString()
 			var val = obj[item].toString()

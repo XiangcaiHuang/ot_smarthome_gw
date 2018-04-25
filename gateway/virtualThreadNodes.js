@@ -37,8 +37,6 @@ function coapServerStart()
 		console.log('\t payload: ' + payload)
 
 		if (method === 'PUT') {
-			console.log(url + ': ' + payload)
-
 			switch(url){
 			case cfgCoap.Rlamp:
 				// set lamp status

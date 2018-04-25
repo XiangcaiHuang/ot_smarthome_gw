@@ -15,21 +15,12 @@ const coapServer = require('./coapServer')
     , clUtils     = require('command-node')
     , httpServer  = require('./httpServer')
     , tcpServer = require('./tcpSocketServer')
-    , cfgTCP = require('./config').TCPSocketServer
+    , cfgTCP    = require('./config').tcp
+    , tcpClient = require('./tcpSocketClient')
 
 var   stateNew = require('./state').stateNew
     , state    = require('./state').state
     , stateApp = require('./state').stateApp
-
-// for simulated nodes
-// var   wnAddr   = cfgCoap.wnAddr
-//     , lnAddr   = cfgCoap.lnAddr
-//     , nodePort = cfgCoap.defaultPort
-
-// for virtual nodes (NodeJs)
-// var   wnAddr   = cfgCoap.localAddr
-//     , lnAddr   = cfgCoap.localAddr
-//     , nodePort = cfgCoap.nodePort
 
 var   wnAddr   = cfgCoap.wnAddr
     , lnAddr   = cfgCoap.lnAddr
@@ -72,7 +63,26 @@ function stateInit()
 /**
  * \brief   Handle function when get the message from client.
  */
-function TCPMessageHandle(data) {
+function TCPClientMSGHandle(data) {
+	console.log("\nTCP package Received[" + data.length + "]:\n" + data)
+}
+
+function sendToTCPServer(key, val)
+{
+	switch (key) {
+	case cfgTCP.Ralarm:
+		tcpClient.send(key, val)
+		break
+	default:
+		console.log('Err: Bad key.')
+		return
+	}
+}
+
+/**
+ * \brief   Handle function when get the message from client.
+ */
+function TCPServerMSGHandle(data) {
 	console.log("\nTCP package Received[" + data.length + "]:\n" + data)
 
 	var obj= JSON.parse(data)
@@ -165,6 +175,8 @@ function coapMessageHandle(req, res)
 			val = utils.transferSI2SB(val)
 			break
 		case cfgCoap.Rwbtemp:
+			sendToTCPServer(cfgTCP.Ralarm, val)
+
 			oId = cfgObjectId.oIdRwbtemp
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRwbtemp
@@ -421,6 +433,21 @@ function cmdResetNodes(commands)
 	sendToUI(cfgCoap.nodeLamp, cfgCoap.lightSta, cfgCoap.valOff)
 }
 
+function cmdSendToTCPServer(commands)
+{
+	var key = commands[0]
+	var val = commands[1]
+
+	switch (key) {
+	case cfgTCP.Ralarm:
+		tcpClient.send(key, val)
+		break
+	default:
+		console.log('Err: Bad key.')
+		return
+	}
+}
+
 function cmdExit(commands)
 {
 	process.exit();
@@ -432,12 +459,17 @@ const commands = {
 		description: '\tList all the resource in state and stateNew.',
 		handler: cmdShowState
 	},
-	's': { // send
-		// s wn btemp 380
-		// s ln lamp  0/1
+	'sn': { // send to Thread Nodes
+		// sn ln lamp 1
 		parameters: ['nodeName', 'url', 'value'],
 		description: '\tSend CoAP PUT message to Node',
 		handler: cmdSendToNode
+	},
+	'st': { // send to TCP Server
+		// st alarm 1
+		parameters: ['key', 'value'],
+		description: '\tSend TCP Package to server',
+		handler: cmdSendToTCPServer
 	},
 	'r': { // reset
 		parameters: [],
@@ -465,6 +497,7 @@ stateInit()
 coapServer.serverStart(coapMessageHandle)
 httpServer.start()
 wsServer.start(WSMessageHandle)
-tcpServer.start(cfgTCP.ip, cfgTCP.port, TCPMessageHandle)
+tcpServer.start(cfgTCP.ip, cfgTCP.port, TCPServerMSGHandle)
+tcpClient.start(cfgTCP.serverIP, cfgTCP.serverPort, TCPClientMSGHandle)
 
 clUtils.initialize(commands, 'GW> ')

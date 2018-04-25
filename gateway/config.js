@@ -92,10 +92,16 @@ config.WebSocketServer = {
 
 // Configuration of the TCP socket server
 //--------------------------------------------------
-config.TCPSocketServer = {
-	  ip:  "127.0.0.1"
+config.tcp = {
+	  ip:        "127.0.0.1"
+	, port:       6666
+	, serverIP:  "127.0.0.1"
+	, serverPort: 8888
 	, localhost: "127.0.0.1"
-	, port: 6666
+	
+	, Ralarm: "alarm"
+	, Rdirection: "direction"
+	, Rmusic: "music"
 }
 
 module.exports = config
