@@ -82,5 +82,12 @@ config.WebSocketServer = {
 	port: 3001
 }
 
+// Configuration of the TCP socket server
+//--------------------------------------------------
+config.TCPSocketServer = {
+	  ip:  "127.0.0.1"
+	, port: 6666
+}
+
 module.exports = config
 

@@ -7,26 +7,29 @@ LICENSE
  * \brief	the functions about the 
 	OpenThread Application Gateway.
 --------------------------------------------- */
-const coap     = require('./coap')
+const coapServer = require('./coapServer')
     , cfgCoap  = require('./config').coap
     , wsServer = require('./webSocketServer')
     , utils    = require('./utils')
     , cfgObjectId = require('./config').ObjectId
     , clUtils     = require('command-node')
     , httpServer  = require('./httpServer')
+    , tcpServer = require('./tcpSocketServer')
+    , cfgTCP = require('./config').TCPSocketServer
 
 var   stateNew = require('./state').stateNew
     , state    = require('./state').state
+    , stateApp = require('./state').stateApp
 
 // for simulated nodes
-var   wnAddr   = cfgCoap.wnAddr
-    , lnAddr   = cfgCoap.lnAddr
-    , nodePort = cfgCoap.defaultPort
+// var   wnAddr   = cfgCoap.wnAddr
+//     , lnAddr   = cfgCoap.lnAddr
+//     , nodePort = cfgCoap.defaultPort
 
 // for virtual nodes (NodeJs)
-// var   wnAddr   = cfgCoap.localAddr
-//     , lnAddr   = cfgCoap.localAddr
-//     , nodePort = cfgCoap.nodePort
+var   wnAddr   = cfgCoap.localAddr
+    , lnAddr   = cfgCoap.localAddr
+    , nodePort = cfgCoap.nodePort
 
 
 // must initialize the stateNew or it happen error
@@ -49,6 +52,60 @@ function stateInit()
 			"3311":{"0":{"5850":false}} // lamp
 		}
 	}
+
+	stateApp = {
+		  'btemp'    :"0" // Resources of wearable node
+		, 'hrate'    :"0"
+		, 'state'    :"0"
+		, 'motion'   :"0"
+		, 'whrate'   :"0"
+		, 'wbtemp'   :"0"
+		, 'wdownward':"0"
+		, 'awake'    :"0"
+		, 'lamp'     :"0" // Resources of lamp node
+	}
+}
+
+/**
+ * \brief   Handle function when get the message from client.
+ */
+function TCPMessageHandle(data) {
+	console.log("\nTCP package Received[" + data.length + "]:\n" + data)
+
+	var obj= JSON.parse(data)
+	for (var item in obj) {
+		var key = item.toString()
+		var val = obj[item].toString()
+
+		switch(key) {
+			case cfgCoap.Rlamp:
+				sendToUI(cfgCoap.nodeLamp, key, val)
+				coapServer.sendToNode(lnAddr, nodePort, key, val)
+				stateApp[key] = val
+			break
+		default:
+			console.error('Err: Bad key')
+			break
+		}
+	}
+}
+
+// send state changed to UI
+function sendStateToApp(stateApp)
+{
+	if (stateApp !== undefined) {
+		console.log("\nGW: Send state changed to App.")
+		console.log("\tstate changed : " + JSON.stringify(stateApp))
+
+		tcpServer.send(JSON.stringify(stateApp)); //send to App
+		// state = utils.deepCopy(stateNew) //update state
+	}
+}
+
+function sendToApp(key, val)
+{
+	stateApp[key] = val
+	sendStateToApp(stateApp)
 }
 
 // receive PUT message from Thread Nodes
@@ -65,9 +122,13 @@ function coapMessageHandle(req, res)
 
 	var obj= JSON.parse(jsonPayload)
 	for (var item in obj) {
-		val = obj[item].toString()
+		var key = item.toString()
+		var val = obj[item].toString()
+
+		console.log("DBG " + key + " : " + val)
+		stateApp[key]= val
 		
-		switch(item.toString()){
+		switch(key){
 		case cfgCoap.Rbtemp:
 			oId = cfgObjectId.oIdRbtemp
 			iId = cfgObjectId.iId
@@ -133,6 +194,7 @@ function coapMessageHandle(req, res)
 	}
 
 	sendStateToUI(stateNew)
+	sendStateToApp(stateApp)
 }
 
 function deltaFromUI(thingName, stateObject)
@@ -168,7 +230,7 @@ function deltaFromUI(thingName, stateObject)
 		}
 
 		// send state changed to Node
-		console.log('GW: Send state changed to Node.')
+		console.log('\nGW: Send state changed to Node.')
 		var url, UIChanged = false
 
 		// remap LwM2M Object Id to coap url
@@ -176,7 +238,7 @@ function deltaFromUI(thingName, stateObject)
 			switch (oId) {
 			case cfgObjectId.oIdRlamp:
 				url = cfgCoap.Rlamp
-				coap.sendToNode(lnAddr, nodePort, url, newValue)
+				coapServer.sendToNode(lnAddr, nodePort, url, newValue)
 
 				// update all app UI
 				sendToUI(cfgCoap.nodeLamp, url, newValue)
@@ -226,7 +288,7 @@ function WSMessageHandle(message)
 function sendStateToUI(stateNew)
 {
 	if (stateNew !== undefined) {
-		console.log("GW: Send state changed to UI.")
+		console.log("\nGW: Send state changed to UI.")
 		console.log("\tstate changed : " + JSON.stringify(stateNew))
 
 		wsServer.send(stateNew)          //send to UI
@@ -305,7 +367,7 @@ function sendToUI(nodeName, url, val)
 	stateNew[endpoint][oId][iId][rId] = val
 	
 	if (stateNew !== undefined) {
-		console.log("GW: Send state changed to UI.")
+		console.log("\nGW: Send state changed to UI.")
 		console.log("\tstate changed : " + JSON.stringify(stateNew))
 
 		wsServer.send(stateNew)          //send to UI
@@ -316,11 +378,9 @@ function sendToUI(nodeName, url, val)
 /******************** Commands **************************/
 function cmdShowState()
 {
-	console.log('stateNew:')
-	console.log(JSON.stringify(stateNew))
-	console.log('\n')
-	console.log('state:')
-	console.log(JSON.stringify(state))
+	console.log('stateNew:'+ JSON.stringify(stateNew))
+	console.log('\nstate:' + JSON.stringify(state))
+	console.log('\nstateApp:'+ JSON.stringify(stateApp))
 }
 
 function cmdSendToNode(commands)
@@ -331,29 +391,29 @@ function cmdSendToNode(commands)
 	var val = commands[2]
 
 	switch (nodeName) {
-	case 'wn':
-		nodeName = cfgCoap.nodeWearable
-		nodeAddr = wnAddr
-		break
-	case 'ln':
+	case cfgCoap.nodeLamp:
 		nodeName = cfgCoap.nodeLamp
 		nodeAddr = lnAddr
+
+		if (url == cfgCoap.Rlamp) {
+			coapServer.sendToNode(nodeAddr, nodePort, url, val)
+			sendToUI(nodeName, url, val)
+			sendToApp(url, val)
+
+		}
 		break
 	default:
-		console.log('Err: Bad nodeName.')
+		console.log('Err: Bad nodeName or url.')
 		return
 	}
-
-	coap.sendToNode(nodeAddr, nodePort, url, val)
-	sendToUI(nodeName, url, val)
 }
 
 function cmdResetNodes(commands)
 {
-	coap.sendToNode(wnAddr, nodePort, cfgCoap.lockSta, cfgCoap.valOff)
+	coapServer.sendToNode(wnAddr, nodePort, cfgCoap.lockSta, cfgCoap.valOff)
 	sendToUI(cfgCoap.nodeWearable, cfgCoap.lockSta, cfgCoap.valOff)
 
-	coap.sendToNode(lnAddr, nodePort, cfgCoap.lightSta, cfgCoap.valOff)
+	coapServer.sendToNode(lnAddr, nodePort, cfgCoap.lightSta, cfgCoap.valOff)
 	sendToUI(cfgCoap.nodeLamp, cfgCoap.lightSta, cfgCoap.valOff)
 }
 
@@ -389,11 +449,18 @@ const commands = {
 /******************** Commands **************************/
 
 /********************   Main   **************************/
+// iBaby-Robot Gateway starting:
+// Http : Listening at port 8080
+// coapServer: Listening on [::1 : 5683]
+// Websocket : Listening at port 3001
+// tcpServer : Listening on [127.0.0.1:6666]
+// GW> 
 console.log('iBaby-Robot Gateway starting:')
 
 stateInit()
-coap.serverStart(coapMessageHandle)
+coapServer.serverStart(coapMessageHandle)
 httpServer.start()
 wsServer.start(WSMessageHandle)
+tcpServer.start(cfgTCP.ip, cfgTCP.port, TCPMessageHandle)
 
 clUtils.initialize(commands, 'GW> ')
