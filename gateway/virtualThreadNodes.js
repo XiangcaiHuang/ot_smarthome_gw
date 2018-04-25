@@ -7,17 +7,22 @@ LICENSE
  * \brief	the functions about the virtual Thread Nodes(CoAP/Thread).
 --------------------------------------------- */
 const coap  = require('coap')
-    , config  = require('./config').coap
+    , cfgCoap  = require('./config').coap
     , clUtils = require('command-node')
     , coapServer = coap.createServer({ type: 'udp6' })
+
+var   gwAddr = cfgCoap.localAddr
+    , gwPort = cfgCoap.gwPort
+    , nodeAddr = cfgCoap.localAddr
+    , nodePort = cfgCoap.nodePort
 
 var stateNew = {}
 var jsonPayload = {}
 
 function coapServerStart()
 {
-	coapServer.listen(config.nodePort, config.localAddr, function() {
-		console.log('Coap: Listening at port: ' + config.nodePort)
+	coapServer.listen(nodePort, nodeAddr, function() {
+		console.log('Coap: Listening on [ ' + nodeAddr + ' : ' + nodePort +']')
 	})
 
 	// receive PUT message from Gateway
@@ -35,7 +40,7 @@ function coapServerStart()
 			console.log(url + ': ' + payload)
 
 			switch(url){
-			case config.Rlamp:
+			case cfgCoap.Rlamp:
 				// set lamp status
 				console.log('Nodes: Set lamp status.\r\n')
 				stateNew[url] = payload
@@ -51,7 +56,7 @@ function coapServerStart()
 }
 
 // send PUT message to Gateway
-function sendToGW(gwAddr, gwPort, nodeName, key, val)
+function sendToGW(nodeName, key, val)
 {
 	var req = coap.request({
 		  host: gwAddr
@@ -90,7 +95,7 @@ function cmdReset()
 
 function cmdSendToGW(commands)
 {
-	sendToGW(config.localAddr, config.gwPort, commands[0], commands[1], commands[2])
+	sendToGW(commands[0], commands[1], commands[2])
 }
 
 function cmdExit(commands)

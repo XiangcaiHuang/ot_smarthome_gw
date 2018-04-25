@@ -27,10 +27,13 @@ var   stateNew = require('./state').stateNew
 //     , nodePort = cfgCoap.defaultPort
 
 // for virtual nodes (NodeJs)
-var   wnAddr   = cfgCoap.localAddr
-    , lnAddr   = cfgCoap.localAddr
-    , nodePort = cfgCoap.nodePort
+// var   wnAddr   = cfgCoap.localAddr
+//     , lnAddr   = cfgCoap.localAddr
+//     , nodePort = cfgCoap.nodePort
 
+var   wnAddr   = cfgCoap.wnAddr
+    , lnAddr   = cfgCoap.lnAddr
+    , nodePort = cfgCoap.nodePort
 
 // must initialize the stateNew or it happen error
 function stateInit()
@@ -239,6 +242,7 @@ function deltaFromUI(thingName, stateObject)
 			case cfgObjectId.oIdRlamp:
 				url = cfgCoap.Rlamp
 				coapServer.sendToNode(lnAddr, nodePort, url, newValue)
+				sendToApp(url, newValue)
 
 				// update all app UI
 				sendToUI(cfgCoap.nodeLamp, url, newValue)

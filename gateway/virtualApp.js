@@ -12,13 +12,16 @@ const clUtils = require('command-node')
     , cfgTCP = require('./config').TCPSocketServer
     , cfgCoap  = require('./config').coap
 
+var   gwAddr = cfgTCP.localhost
+    , gwPort = cfgTCP.port
+
 var stateApp = {}
 var jsonPayload = {}
 
 function tcpClientStart()
 {
-	clientSocket.connect(cfgTCP.port, function() {
-		console.log('\nApp: Connect to Gateway [' + cfgTCP.ip + ' : ' + cfgTCP.port +']');
+	clientSocket.connect(gwPort, gwAddr, function() {
+		console.log('\nApp: Connect to Gateway [' + gwAddr + ' : ' + gwPort +']');
 	});
 
 	clientSocket.on('data', function(data) {
@@ -43,7 +46,7 @@ function tcpClientStart()
 }
 
 // send message to Gateway
-function sendToGW(gwAddr, gwPort, key, val)
+function sendToGW(key, val)
 {
 	jsonPayload = {}
 	jsonPayload[key] = val
@@ -75,7 +78,7 @@ function cmdSendToGW(commands)
 
 	switch (key) {
 	case cfgCoap.Rlamp:
-		sendToGW(cfgTCP.ip, cfgTCP.port, key, val)
+		sendToGW(key, val)
 		break
 	default:
 		console.log('Err: Bad key.')

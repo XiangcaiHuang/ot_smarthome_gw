@@ -8,16 +8,19 @@ LICENSE
  	OpenThread-CoAP-Based Server and Client.
 --------------------------------------------- */
 const coap    = require('coap')
-    , config  = require('./config').coap
+    , cfgCoap  = require('./config').coap
     , coapServer  = coap.createServer({ type: 'udp6' })
 
 // for simulated nodes
- // var   gwAddr = config.gwAddr
- //     , gwPort = config.gwPort
+ // var   gwAddr = cfgCoap.gwAddr
+ //     , gwPort = cfgCoap.gwPort
 
 // for virtual nodes (NodeJs)
-var   gwAddr = config.localAddr
-   , gwPort = config.gwPort
+// var   gwAddr = cfgCoap.localAddr
+//    , gwPort = cfgCoap.gwPort
+
+var   gwAddr = cfgCoap.gwAddr
+    , gwPort = cfgCoap.gwPort
 
 function serverStart(handleMessage)
 {
