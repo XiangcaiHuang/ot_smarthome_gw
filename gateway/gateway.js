@@ -85,7 +85,12 @@ function sendToTCPServer(key, val)
 function TCPServerMSGHandle(data) {
 	console.log("\nTCP package Received[" + data.length + "]:\n" + data)
 
-	var obj= JSON.parse(data)
+	try {
+		var obj= JSON.parse(data)
+	} catch(err) {
+		console.log('\nGW: Not JSON payload')
+		return
+	}
 	for (var item in obj) {
 		var key = item.toString()
 		var val = obj[item].toString()
@@ -137,8 +142,6 @@ function coapMessageHandle(req, res)
 	for (var item in obj) {
 		var key = item.toString()
 		var val = obj[item].toString()
-
-		console.log("DBG " + key + " : " + val)
 		stateApp[key]= val
 		
 		switch(key){
@@ -175,8 +178,6 @@ function coapMessageHandle(req, res)
 			val = utils.transferSI2SB(val)
 			break
 		case cfgCoap.Rwbtemp:
-			sendToTCPServer(cfgTCP.Ralarm, val)
-
 			oId = cfgObjectId.oIdRwbtemp
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRwbtemp
@@ -195,6 +196,8 @@ function coapMessageHandle(req, res)
 			val = utils.transferSI2SB(val)
 			break
 		case cfgCoap.Rlamp:
+			sendToTCPServer(cfgTCP.Ralarm, val)
+
 			oId = cfgObjectId.oIdRlamp
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRlamp
@@ -448,6 +451,11 @@ function cmdSendToTCPServer(commands)
 	}
 }
 
+function cmdConnectToTCPServer(commands)
+{
+	tcpClient.start(cfgTCP.serverIP, cfgTCP.serverPort, TCPClientMSGHandle)
+}
+
 function cmdExit(commands)
 {
 	process.exit();
@@ -468,8 +476,13 @@ const commands = {
 	'st': { // send to TCP Server
 		// st alarm 1
 		parameters: ['key', 'value'],
-		description: '\tSend TCP Package to server',
+		description: '\tSend data to TCP server',
 		handler: cmdSendToTCPServer
+	},
+	'c': {  // connect to TCP Server
+		parameters: [],
+		description: '\tConnect to TCP server',
+		handler: cmdConnectToTCPServer
 	},
 	'r': { // reset
 		parameters: [],

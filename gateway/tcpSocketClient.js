@@ -20,13 +20,13 @@ function start(servIP, servPort, handleMessage)
 	serverAddr = servIP
 	serverPort = servPort
 	clientSocket.connect(serverPort, serverAddr, function() {
-		console.log('\nGW: Connect to server [' + serverAddr + ' : ' + serverPort +']');
+		console.log('\ntcpClient: Connect to (Voice module)server [' + serverAddr + ' : ' + serverPort +']');
 	});
 
 	clientSocket.on('data', handleMessage);
 
 	clientSocket.on('close', function() {
-		console.log('\nGW: Connection closed');
+		console.log('\ntcpClient: (Voice module)Connection closed');
 	});
 
 	clientSocket.on('error', function(error){
@@ -40,7 +40,7 @@ function send(key, val)
 	jsonPayload = {}
 	jsonPayload[key] = val
 
-	console.log('\n Send ' + JSON.stringify(jsonPayload) + ' to [' + serverAddr + ': ' + serverPort + '].')
+	console.log('\ntcpClient: Send ' + JSON.stringify(jsonPayload) + ' to (Voice module)[' + serverAddr + ': ' + serverPort + '].')
 
 	clientSocket.write(JSON.stringify(jsonPayload));
 }

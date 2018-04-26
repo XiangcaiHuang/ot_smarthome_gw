@@ -16,21 +16,21 @@ function start(serverIP, serverPort, handleMessage){
     var server = net.createServer(function(socket) { 
         //'connection' listener
         serverSocket = socket;
-        console.log("tcpServer : Client on [" + socket.remoteAddress + ":" + socket.remotePort + "] connected");
+        console.log("tcpServer : (App)Client on [" + socket.remoteAddress + ":" + socket.remotePort + "] connected");
 
         //emitted when data is received
         socket.on('data', handleMessage);
 
         //emitted when the other end of the socket sends a FIN packet
         socket.on('end', function() {
-            console.log("tcpServer: Client on [" + socket.remoteAddress + ":" + socket.remotePort + "] disconnected");
+            console.log("tcpServer: (App)Client on [" + socket.remoteAddress + ":" + socket.remotePort + "] disconnected");
         });
 
         //emitted once the socket is fully closed
         socket.on('close', function(){
             socket.destroy();
             serverSocket = null;
-            console.log("tcpServer: Socket for client on [" + socket.remoteAddress + ":" + socket.remotePort + "] closed");
+            console.log("tcpServer: Socket for (App)client on [" + socket.remoteAddress + ":" + socket.remotePort + "] closed");
         });
 
         //emitted when an error occurs
@@ -47,7 +47,7 @@ function start(serverIP, serverPort, handleMessage){
 
 function send(message){
     if (serverSocket == null) {
-        console.log("err: Send failed. TCP Client disconnected");
+        console.log("tcpServer: Send failed. (App)Client disconnected");
     }else{
         serverSocket.write(message);
     }

@@ -93,7 +93,7 @@ config.WebSocketServer = {
 // Configuration of the TCP socket server
 //--------------------------------------------------
 config.tcp = {
-	  ip:        "127.0.0.1"
+	  ip:        "192.168.2.127"
 	, port:       6666
 	, serverIP:  "127.0.0.1"
 	, serverPort: 8888

@@ -9,10 +9,10 @@ LICENSE
 const clUtils = require('command-node')
     , net = require('net')
     , clientSocket = new net.Socket()
-    , cfgTCP = require('./config').TCPSocketServer
+    , cfgTCP = require('./config').tcp
     , cfgCoap  = require('./config').coap
 
-var   gwAddr = cfgTCP.localhost
+var   gwAddr = cfgTCP.ip
     , gwPort = cfgTCP.port
 
 var stateApp = {}
