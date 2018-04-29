@@ -48,6 +48,13 @@ config.coap = {
 	, Rwdownward:     'wdownward'
 	, Rawake:         'awake'
 	, Rlamp:          'lamp' // Resources of lamp node
+	, Rco2:           'co2'
+	, Rtvoc:          'tvoc'
+	, Rch2o:          'ch2o'
+	, Rpm2_5:         'pm2_5'
+	, Rrh:            'rh'
+	, Rtemp:          'temp'
+	, Rpm10:          'pm10'
 	, valOn:          '1'
 	, valOff:         '0'
 	, valDefault:     '0'
@@ -93,7 +100,7 @@ config.WebSocketServer = {
 // Configuration of the TCP socket server
 //--------------------------------------------------
 config.tcp = {
-	  ip:        "192.168.2.127"
+	  ip:        "192.168.2.206"
 	, port:       6666
 	, serverIP:  "192.168.2.206"
 	, serverPort: 8888

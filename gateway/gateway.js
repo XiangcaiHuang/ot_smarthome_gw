@@ -57,6 +57,13 @@ function stateInit()
 		, 'wdownward':"0"
 		, 'awake'    :"0"
 		, 'lamp'     :"0" // Resources of lamp node
+		, 'co2'      :'0'
+		, 'tvoc'     :'0'
+		, 'ch2o'     :'0'
+		, 'pm2_5'    :'0'
+		, 'rh'       :'0'
+		, 'temp'     :'0'
+		, 'pm10'     :'0'
 	}
 }
 
@@ -143,6 +150,7 @@ function coapMessageHandle(req, res)
 		var key = item.toString()
 		var val = obj[item].toString()
 		stateApp[key]= val
+		sendStateToApp(stateApp)
 		
 		switch(key){
 		case cfgCoap.Rbtemp:
@@ -204,7 +212,7 @@ function coapMessageHandle(req, res)
 			val = utils.transferSI2B(val)
 			break
 		default:
-			console.error('Err: Bad url')
+			console.error("Err: Bad url, don't send stateNew to Web UI")
 			return
 		}
 
@@ -212,7 +220,6 @@ function coapMessageHandle(req, res)
 	}
 
 	sendStateToUI(stateNew)
-	sendStateToApp(stateApp)
 }
 
 function deltaFromUI(thingName, stateObject)
