@@ -443,7 +443,8 @@ function cmdResetNodes(commands)
 	sendToUI(cfgCoap.nodeLamp, cfgCoap.lightSta, cfgCoap.valOff)
 }
 
-function cmdSendToTCPServer(commands)
+// Voice/TCP server
+function cmdSendToVoice(commands)
 {
 	var key = commands[0]
 	var val = commands[1]
@@ -458,9 +459,9 @@ function cmdSendToTCPServer(commands)
 	}
 }
 
-function cmdConnectToTCPServer(commands)
+function cmdConnectToVoice(commands)
 {
-	tcpClient.start(cfgTCP.serverIP, cfgTCP.serverPort, TCPClientMSGHandle)
+	tcpClient.start(cfgTCP.voiceIP, cfgTCP.voicePort, TCPClientMSGHandle)
 }
 
 function cmdExit(commands)
@@ -477,19 +478,19 @@ const commands = {
 	'sn': { // send to Thread Nodes
 		// sn ln lamp 1
 		parameters: ['nodeName', 'url', 'value'],
-		description: '\tSend CoAP PUT message to Node',
+		description: '\tSend CoAP PUT message to Lamp Node',
 		handler: cmdSendToNode
 	},
-	'st': { // send to TCP Server
+	'st': { // send to Voice(TCP server)
 		// st alarm 1
 		parameters: ['key', 'value'],
-		description: '\tSend data to TCP server',
-		handler: cmdSendToTCPServer
+		description: '\tSend data to Voice(TCP server)',
+		handler: cmdSendToVoice
 	},
-	'c': {  // connect to TCP Server
+	'c': {  // connect to Voice(TCP server)
 		parameters: [],
-		description: '\tConnect to TCP server',
-		handler: cmdConnectToTCPServer
+		description: '\tConnect to Voice(TCP server)',
+		handler: cmdConnectToVoice
 	},
 	'r': { // reset
 		parameters: [],
@@ -518,6 +519,6 @@ coapServer.serverStart(coapMessageHandle)
 httpServer.start()
 wsServer.start(WSMessageHandle)
 tcpServer.start(cfgTCP.ip, cfgTCP.port, TCPServerMSGHandle)
-tcpClient.start(cfgTCP.serverIP, cfgTCP.serverPort, TCPClientMSGHandle)
+tcpClient.start(cfgTCP.voiceIP, cfgTCP.voicePort, TCPClientMSGHandle)
 
 clUtils.initialize(commands, 'GW> ')
