@@ -95,7 +95,7 @@ config.WebSocketServer = {
 config.tcp = {
 	  ip:        "192.168.2.127"
 	, port:       6666
-	, serverIP:  "192.168.2.127"
+	, serverIP:  "192.168.2.206"
 	, serverPort: 8888
 	, localhost: "127.0.0.1"
 	
