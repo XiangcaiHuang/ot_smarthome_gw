@@ -27,12 +27,13 @@ wpanctl_start_k64_nrf52840_join_network()
 	sudo wpanctl -I $THREAD_INTERFACE_NAME status
 }
 
+#sudo wpanctl -I utun6 set Network:Key --data 00112233445566778899AABBCCDDEEFF
+#sudo wpanctl -I utun6 set NCP:Channel 11
+#sudo wpanctl -I utun6 setprop Network:PANID 0x1234
+#sudo wpanctl -I utun6 attach
+
 wpanctl_start_create_or_join_network()
 {
-	# comment the two lines below when using EMSK
-	#sudo wpanctl -I $THREAD_INTERFACE_NAME reset
-	#sleep 10
-
 	sudo wpanctl -I $THREAD_INTERFACE_NAME set Network:Key --data $THREAD_NETWORK_KEY
 	sudo wpanctl -I $THREAD_INTERFACE_NAME set NCP:Channel $THREAD_CHANNEL
 	sudo wpanctl -I $THREAD_INTERFACE_NAME setprop Network:PANID $THREAD_PANID

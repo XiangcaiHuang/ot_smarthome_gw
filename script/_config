@@ -11,7 +11,7 @@ THREAD_CHANNEL="11"
 THREAD_PANID="0x1234"
 
 # for EMSK borad
-SOCKET_PATH="/dev/ttyUSB1"
+#SOCKET_PATH="/dev/ttyUSB1"
 
 # for K64/NRF52840 board
-# SOCKET_PATH="/dev/ttyACM0"
+SOCKET_PATH="/dev/ttyACM0"

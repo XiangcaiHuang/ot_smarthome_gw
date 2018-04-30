@@ -1,6 +1,6 @@
 #!/bin/bash
-. ../_config
-. ../_wpantund
+. ./_config
+. ./_wpantund
 
 main()
 {

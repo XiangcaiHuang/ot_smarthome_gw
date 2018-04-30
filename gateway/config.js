@@ -22,20 +22,20 @@ var config = {}
 //      coap put fdde:ba7a:b1e5:0:35d1:c886:ea1e:8bb3 temp con 25
 
 config.coap = {
-	  nodePort    : 5684
+	  nodePort    : 5683
 	, gwPort      : 5683
 	, defaultPort : 5683
 	, localAddr   : '::1'
 
 	// for simulated nodes
-	// , wnAddr   : 'fdde:ad00:beef:0:4f6e:7e53:67c8:f5b0'
-	// , lnAddr   : 'fdde:ad00:beef:0:12be:a2e8:4b1c:4d19'
-	// , gwAddr   : 'fdde:ad00:beef:0:3b33:8a2f:8e4:67d3'
+	 , wnAddr   : 'fdde:ad00:beef:0:4f6e:7e53:67c8:f5b0'
+	 , lnAddr   : 'fdde:ad00:beef:0:12be:a2e8:4b1c:4d19'
+	 , gwAddr   : 'fdde:ad00:beef:0:3b33:8a2f:8e4:67d3'
 
 	// for virtual nodes (NodeJs)
-	, wnAddr   : '::1'
-	, lnAddr   : '::1'
-	, gwAddr   : '::1'
+	//, wnAddr   : '::1'
+	//, lnAddr   : '::1'
+	//, gwAddr   : '::1'
 
 	, nodeWearable:   'wn'  // Name of wearable node
 	, nodeLamp:       'ln'  // Name of lamp node

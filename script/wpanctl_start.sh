@@ -1,5 +1,5 @@
 #!/bin/bash
-. ../_wpanctl
+. ./_wpanctl
 
 print_help_info()
 {

@@ -1,6 +1,6 @@
 #!/bin/bash
-. ../_config
-. ../_gateway
+. ./_config
+. ./_gateway
 
 print_help_info()
 {
