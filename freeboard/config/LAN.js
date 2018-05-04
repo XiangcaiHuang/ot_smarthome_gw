@@ -53,7 +53,26 @@ var LANConfig = {
 					}
 				}
 			]
-		}
+		},
+		{
+			"width": 1,
+			"row": {
+				"3": 11
+			},
+			"col": {
+				"3": 2
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "rtspvideo",
+					"settings": {
+						"url": "rtsp://192.168.2.52:8554/unicast",
+						"height": 3
+					}
+				}
+			]
+	}
 	],
 	"datasources": [
 		{

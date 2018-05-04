@@ -32,7 +32,7 @@ function stateInit()
 	stateNew = {
 		"wn":{
 			"3303":{"0":{"5700":0    }},// btemp
-			"3346":{"0":{"5700":0    }},// hrate
+			"3346":{"0":{"5700":61   }},// hrate
 
 			"3300":{"0":{"5700":0    }},// state
 			"3323":{"0":{"5700":0    }},// motion
@@ -49,7 +49,7 @@ function stateInit()
 
 	stateApp = {
 		  'btemp'    :"0" // Resources of wearable node
-		, 'hrate'    :"0"
+		, 'hrate'    :"61"
 		, 'state'    :"0"
 		, 'motion'   :"0"
 		, 'whrate'   :"0"
@@ -57,13 +57,13 @@ function stateInit()
 		, 'wdownward':"0"
 		, 'awake'    :"0"
 		, 'lamp'     :"0" // Resources of lamp node
-		, 'co2'      :'0'
-		, 'tvoc'     :'0'
-		, 'ch2o'     :'0'
-		, 'pm2_5'    :'0'
-		, 'rh'       :'0'
-		, 'temp'     :'0'
-		, 'pm10'     :'0'
+		, 'co2'      :"0"
+		, 'tvoc'     :"0"
+		, 'ch2o'     :"0"
+		, 'pm2_5'    :"0"
+		, 'rh'       :"0"
+		, 'temp'     :"0"
+		, 'pm10'     :"0"
 	}
 }
 
@@ -150,7 +150,6 @@ function coapMessageHandle(req, res)
 		var key = item.toString()
 		var val = obj[item].toString()
 		stateApp[key]= val
-		sendStateToApp(stateApp)
 		
 		switch(key){
 		case cfgCoap.Rbtemp:
@@ -160,65 +159,77 @@ function coapMessageHandle(req, res)
 			//temperature format: 370
 			//transfer it to 37.0'C
 			val = parseInt(val) / 10.0
+			stateNew[nodeName][oId][iId][rId] = val
 			break
 		case cfgCoap.Rhrate:
 			oId = cfgObjectId.oIdRhrate
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRbtemp
 			val = parseInt(val)
+			stateNew[nodeName][oId][iId][rId] = val
 			break
 		case cfgCoap.Rstate:
 			oId = cfgObjectId.oIdRstate
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRstate
 			val = parseInt(val)
+			stateNew[nodeName][oId][iId][rId] = val
 			break
 		case cfgCoap.Rmotion:
 			oId = cfgObjectId.oIdRmotion
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRmotion
 			val = parseInt(val)
+			stateNew[nodeName][oId][iId][rId] = val
 			break
 		case cfgCoap.Rwhrate:
 			oId = cfgObjectId.oIdRwhrate
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRwhrate
 			val = utils.transferSI2SB(val)
+			stateNew[nodeName][oId][iId][rId] = val
 			break
 		case cfgCoap.Rwbtemp:
 			oId = cfgObjectId.oIdRwbtemp
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRwbtemp
 			val = utils.transferSI2SB(val)
+			stateNew[nodeName][oId][iId][rId] = val
 			break
 		case cfgCoap.Rwdownward:
+			if(val == "1") {
+				sendToTCPServer(cfgTCP.Ralarm, "1")
+				coapServer.sendToNode(lnAddr, nodePort, cfgCoap.Rlamp, "1")
+				stateNew[cfgCoap.nodeLamp][cfgObjectId.oIdRlamp][cfgObjectId.iId][cfgObjectId.rIdRlamp] = true
+			}
+
 			oId = cfgObjectId.oIdRwdownward
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRwdownward
 			val = utils.transferSI2SB(val)
+			stateNew[nodeName][oId][iId][rId] = val
 			break
 		case cfgCoap.Rawake:
 			oId = cfgObjectId.oIdRawake
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRawake
 			val = utils.transferSI2SB(val)
+			stateNew[nodeName][oId][iId][rId] = val
 			break
 		case cfgCoap.Rlamp:
-			sendToTCPServer(cfgTCP.Ralarm, val)
-
 			oId = cfgObjectId.oIdRlamp
 			iId = cfgObjectId.iId
 			rId = cfgObjectId.rIdRlamp
 			val = utils.transferSI2B(val)
+			stateNew[nodeName][oId][iId][rId] = val
 			break
 		default:
-			console.error("Err: Bad url, don't send stateNew to Web UI")
-			return
+			console.log("GW: url [" + key + "] don't send it to Web UI")
+			break
 		}
-
-		stateNew[nodeName][oId][iId][rId] = val
 	}
-
+	
+	sendStateToApp(stateApp)
 	sendStateToUI(stateNew)
 }
 

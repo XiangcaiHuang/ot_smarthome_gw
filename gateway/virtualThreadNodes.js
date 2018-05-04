@@ -11,7 +11,7 @@ const coap  = require('coap')
     , clUtils = require('command-node')
     , coapServer = coap.createServer({ type: 'udp6' })
 
-var   gwAddr = cfgCoap.localAddr
+var   gwAddr = cfgCoap.gwAddr
     , gwPort = cfgCoap.gwPort
     , nodeAddr = cfgCoap.localAddr
     , nodePort = cfgCoap.nodePort

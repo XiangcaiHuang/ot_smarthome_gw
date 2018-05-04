@@ -34,6 +34,10 @@ wpanctl_start_k64_nrf52840_join_network()
 
 wpanctl_start_create_or_join_network()
 {
+	# comment the two lines below when using EMSK
+	#sudo wpanctl -I $THREAD_INTERFACE_NAME reset
+	#sleep 10
+
 	sudo wpanctl -I $THREAD_INTERFACE_NAME set Network:Key --data $THREAD_NETWORK_KEY
 	sudo wpanctl -I $THREAD_INTERFACE_NAME set NCP:Channel $THREAD_CHANNEL
 	sudo wpanctl -I $THREAD_INTERFACE_NAME setprop Network:PANID $THREAD_PANID

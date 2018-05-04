@@ -103,7 +103,7 @@ config.tcp = {
 	  ip:        "192.168.2.206"
 	, port:       6666
 	// Voice(TCP server)
-	, voiceIP:  "192.168.2.206"
+	, voiceIP:  "192.168.2.221"
 	, voicePort: 8888
 	, localhost: "127.0.0.1"
 	
